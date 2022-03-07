@@ -10,5 +10,9 @@ namespace WorkoutAPI.Models
         [Required]
         public int ID { get; set; }
 
+        public DateTime WorkoutCreated { get; set; }
+
+        public string? LocationLatitude { get; set; }
+        public string? LocationLongitude { get; set; }
     }
 }

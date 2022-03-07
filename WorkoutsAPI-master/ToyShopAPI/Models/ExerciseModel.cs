@@ -14,6 +14,9 @@ namespace WorkoutAPI.Models
         public ActivityModel? Activity { get; set; }
 
         [Required]
+        public int WorkoutID { get; set; }
+
+        [Required]
         public double? Duration { get; set; }
     }
 }

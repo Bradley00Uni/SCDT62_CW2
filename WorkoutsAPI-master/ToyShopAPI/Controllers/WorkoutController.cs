@@ -24,29 +24,30 @@ namespace WorkoutAPI.Controllers
 
         // GET: api/Produc
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<WorkoutModel>>> GetActivities()
+        public async Task<ActionResult<IEnumerable<WorkoutModel>>> GetWorkouts()
         {
-            return await _context.Workouts.Include("Activity").ToListAsync();
+            return await _context.Workouts.ToListAsync();
         }
 
         // GET: api/Produc/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<WorkoutModel>> GetActivityModel(int id)
+        public async Task<ActionResult<WorkoutViewModel>> GetWorkoutModel(int id)
         {
-            var WorkoutModel = await _context.Workouts.Include("Activity").Where(x => x.ID == id).ToListAsync();
+            var WorkoutModel = await _context.Workouts.FindAsync(id);
 
             if (WorkoutModel == null)
             {
                 return NotFound();
             }
 
-            return WorkoutModel.FirstOrDefault();
+            var ExcerciseModels = await _context.Exercises.Include("Activity").Where(x => x.WorkoutID == WorkoutModel.ID).ToListAsync();
+            return new WorkoutViewModel() { Workout = WorkoutModel, Exercises = ExcerciseModels };
         }
 
         // PUT: api/Produc/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutActivityModel(int id, WorkoutModel WorkoutModel)
+        public async Task<IActionResult> PutWorkoutModel(int id, WorkoutModel WorkoutModel)
         {
             if (id != WorkoutModel.ID)
             {
@@ -61,7 +62,7 @@ namespace WorkoutAPI.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!ActivityModelExists(id))
+                if (!WorkoutModelExists(id))
                 {
                     return NotFound();
                 }
@@ -77,17 +78,17 @@ namespace WorkoutAPI.Controllers
         // POST: api/Produc
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<WorkoutModel>> PostActivityModel(WorkoutModel WorkoutModel)
+        public async Task<ActionResult<WorkoutModel>> PostWorkoutModel(WorkoutModel WorkoutModel)
         {
             _context.Workouts.Add(WorkoutModel);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetActivityModel", new { id = WorkoutModel.ID }, WorkoutModel);
+            return CreatedAtAction("GetWorkoutModel", new { id = WorkoutModel.ID }, WorkoutModel);
         }
 
         // DELETE: api/Produc/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteActivityModel(int id)
+        public async Task<IActionResult> DeleteWorkoutModel(int id)
         {
             var WorkoutModel = await _context.Workouts.FindAsync(id);
             if (WorkoutModel == null)
@@ -95,13 +96,16 @@ namespace WorkoutAPI.Controllers
                 return NotFound();
             }
 
+            var exercises = await _context.Exercises.Where(x => x.WorkoutID == WorkoutModel.ID).ToListAsync();
+
+            _context.Exercises.RemoveRange(exercises);
             _context.Workouts.Remove(WorkoutModel);
             await _context.SaveChangesAsync();
 
             return NoContent();
         }
 
-        private bool ActivityModelExists(int id)
+        private bool WorkoutModelExists(int id)
         {
             return _context.Workouts.Any(e => e.ID == id);
         }

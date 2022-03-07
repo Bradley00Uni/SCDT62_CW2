@@ -9,6 +9,7 @@ namespace WorkoutAPI.Data
     {
         public DbSet<ActivityModel> Activities { get; set; }
         public DbSet<WorkoutModel> Workouts { get; set; }
+        public DbSet<ExerciseModel> Exercises { get; set; }
         public DbSet<UserModel> Users { get; set; }
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
