@@ -1,0 +1,11 @@
+{
+  "expo": {
+    "name": "WorkoutCompanion",
+    "slug": "WorkoutCompanion",
+    "version": "1.0.0",
+    "assetBundlePatterns": [
+      "**/*"
+    ]
+  },
+  "name": "WorkoutCompanion"
+}
