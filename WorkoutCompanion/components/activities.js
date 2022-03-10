@@ -65,10 +65,11 @@ const Activities = () => {
 
             const response = await fetch(`https://localhost:7267/api/activities/${data}`, {
                 method: 'DELETE',
+                body: data
             })
-            let result = await response.json()
+            let result = await response
 
-            if(response.status == 201){
+            if(result){
                 setReturned("Success")
                 showMessage({
                     message: "Activity Deleted",
