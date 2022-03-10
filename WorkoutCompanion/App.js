@@ -1,21 +1,35 @@
-import { StatusBar } from 'expo-status-bar';
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, StyleSheet, Container } from 'react-native';
+import { BottomNavigation, Text } from 'react-native-paper';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import Activities from './components/activities';
+
+const HomeRoute = () => <Text>Home</Text>;
+const ActivityRoute = () => <Text>Activities</Text>;
+const WorkoutRoute = () => <Text>Workouts</Text>;
+const ProfileRoute = () => <Text>Profile</Text>;
 
 export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
-}
+  const [index, setIndex] = useState(0);
+  const [routes] = useState([
+    {key: 'home', title: 'Home', icon: 'home'},
+    {key: 'activities', title: 'Activities', icon: 'walk'},
+    {key: 'workouts', title: 'Workouts', icon: 'routes-clock'},
+    {key: 'profile', title: 'Profile', icon: 'account'},
+  ]);
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+  const renderScene = BottomNavigation.SceneMap({
+    home: HomeRoute,
+    activities: Activities,
+    workouts: WorkoutRoute,
+    profile: ProfileRoute,
+  });
+
+  return (
+    <BottomNavigation
+      navigationState={{index, routes}}
+      onIndexChange={setIndex}
+      renderScene={renderScene}
+    />  
+  )
+};

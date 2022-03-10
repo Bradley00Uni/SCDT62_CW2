@@ -15,5 +15,24 @@ namespace WorkoutAPI.Data
         {
 
         }
+
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            base.OnModelCreating(builder);
+            SeedActivities(builder);
+        }
+
+        private void SeedActivities(ModelBuilder builder)
+        {
+            ActivityModel activity = new ActivityModel()
+            {
+                ID = 69,
+                Name = "Placeholder",
+                Description = "This Activity is for Testing",
+                Type = "Test"
+            };
+
+            builder.Entity<ActivityModel>().HasData(activity);
+        }
     }
 }
