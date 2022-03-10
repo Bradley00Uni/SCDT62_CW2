@@ -5,7 +5,6 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import Activities from './components/activities';
 
 const HomeRoute = () => <Text>Home</Text>;
-const ActivityRoute = () => <Text>Activities</Text>;
 const WorkoutRoute = () => <Text>Workouts</Text>;
 const ProfileRoute = () => <Text>Profile</Text>;
 

@@ -3,6 +3,7 @@ import { Text, TextInput, View, StyleSheet, Button, Alert, ActivityIndicator, Sc
 import { Card, Overlay } from 'react-native-elements';
 import {FontAwesome} from '@expo/vector-icons';
 import FlashMessage, { showMessage, hideMessage } from "react-native-flash-message";
+import { Switch } from 'react-native-paper';
 
 import Create from './activity/create';
 
@@ -12,11 +13,14 @@ const Activities = () => {
     const [visible, setVisible] = useState(null);
     const [returned, setReturned] = useState('')
 
+    const [isSwitchOn, setIsSwitchOn] = useState(false);
+
     useEffect(() => {
         //https://workoutapi20220309144340.azurewebsites.net
         return fetch('https://localhost:7267/api/activities').then( (response) => response.json()).then( (responseJson) => {
             setActivities(responseJson)
             setLoading(false)
+
         })
         .catch((error) => {console.log(error)})
 
@@ -31,27 +35,44 @@ const Activities = () => {
     }
     else{
 
-        let acts = activities.map((val, key) => {
-            return(
-                <View key={key}> 
-                    <Card key={key} style={styles.item} containerStyle={{backgroundColor: '#daeaf6'}}>
-                        <Card.Title h5>{val.name} ({val.type})</Card.Title>
-                        <Card.Divider />
-                        <View style={{justifyContent: 'flex-start'}}>
-                            <Text>{val.description}</Text>
+        let acts;
+            acts = activities.map((val, key) => {
+                if(!isSwitchOn){
+                    return(
+                        <View key={key}> 
+                            <Card key={key} style={styles.item} containerStyle={{backgroundColor: '#daeaf6'}}>
+                                <Card.Title h5>{val.name} ({val.type})</Card.Title>
+                                <Card.Divider />
+                                <View style={{justifyContent: 'flex-start'}}>
+                                    <Text>{val.description}</Text>
+                                </View>
+                                <View style={{flexDirection: 'row', justifyContent: 'flex-end'}}>
+                                    <FontAwesome.Button name='trash-o' style={{justifyContent: 'flex-end', backgroundColor: 'red'}} onPress={() => deleteActivity(val.id)} />
+                                </View>        
+                            </Card>
                         </View>
-                        <View style={{flexDirection: 'row', justifyContent: 'flex-end'}}>
-                            <FontAwesome.Button name='trash-o' style={{justifyContent: 'flex-end', backgroundColor: 'red'}} onPress={() => deleteActivity(val.id)} />
-                        </View>        
-                    </Card>
-                </View>
-            )
-        })
+                    )
+                }
+                else{
+                    return(
+                        <View key={key}>
+                            <Card key={key} style={styles.item} containerStyle={{backgroundColor: '#FFC8A2'}}>
+                                <TextInput style={styles.input} placeholder={val.name}></TextInput>
+                                <TextInput style={styles.input} placeholder={val.description}></TextInput>
+                                <TextInput style={styles.input} placeholder={val.type}></TextInput>
+                            </Card>
+                        </View>
+                    )
+                }
+            })
+
+       const onToggleSwitch = () => setIsSwitchOn(!isSwitchOn)
 
         const TopBar= () => {
             return (
                 <View>
                     <Button title="Create New" onPress={toggleOverlay} />
+                    <Switch value={isSwitchOn} onValueChange={onToggleSwitch}  />
                 </View>
             )
         }
