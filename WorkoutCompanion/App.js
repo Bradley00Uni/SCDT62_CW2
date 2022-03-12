@@ -11,10 +11,10 @@ const ProfileRoute = () => <Text>Profile</Text>;
 export default function App() {
   const [index, setIndex] = useState(0);
   const [routes] = useState([
-    {key: 'home', title: 'Home', icon: 'home'},
-    {key: 'activities', title: 'Activities', icon: 'walk'},
-    {key: 'workouts', title: 'Workouts', icon: 'routes-clock'},
-    {key: 'profile', title: 'Profile', icon: 'account'},
+    {key: 'home', title: 'Home', icon: 'home', color: '#9cadce'},
+    {key: 'activities', title: 'Activities', icon: 'walk', color: '#ACDEAA'},
+    {key: 'workouts', title: 'Workouts', icon: 'routes-clock', color: '#FF968A'},
+    {key: 'profile', title: 'Profile', icon: 'account', color: '#CBAACB'},
   ]);
 
   const renderScene = BottomNavigation.SceneMap({

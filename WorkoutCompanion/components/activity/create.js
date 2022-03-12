@@ -20,7 +20,7 @@ const Create = () => {
 
         formdata.forEach((value, key) => data[key] = value)
 
-        const response = await fetch('https://localhost:7267/api/activities', {
+        const response = await fetch('https://workoutapi20220309144340.azurewebsites.net/api/activities', {
             method: 'POST',
             body: JSON.stringify(data),
             headers: {
