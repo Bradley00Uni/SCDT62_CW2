@@ -1,9 +1,9 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Text, TextInput, View, StyleSheet, Button, Alert, ActivityIndicator, ScrollView, Dimensions } from 'react-native';
 import { Card, Overlay, Header } from 'react-native-elements';
 import {FontAwesome} from '@expo/vector-icons';
 import FlashMessage, { showMessage, hideMessage } from "react-native-flash-message";
-import { Switch, Appbar } from 'react-native-paper';
+import { Appbar } from 'react-native-paper';
 
 import Create from './activity/create';
 import Edit from './activity/edit';
@@ -16,9 +16,7 @@ const Activities = () => {
     const [returned, setReturned] = useState('')
 
     const [toEdit, setToEdit] = useState(null)
-
-    const isInitialMount = useRef(true);
-
+    
     useEffect(() => {
         return fetch('https://workoutapi20220309144340.azurewebsites.net/api/activities').then( (response) => response.json()).then( (responseJson) => {
             setActivities(responseJson)
