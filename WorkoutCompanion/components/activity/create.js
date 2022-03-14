@@ -11,14 +11,12 @@ const Create = () => {
     const [returned, setReturned] = useState('')
 
     const sendData = async () => {
-        let formdata = new FormData();
-        formdata.append("name", name)
-        formdata.append("description", desc)
-        formdata.append("type", type)
 
-        let data = {}
-
-        formdata.forEach((value, key) => data[key] = value)
+        let data = {
+            "name": name,
+            "description": desc,
+            "type": type
+       }
 
         const response = await fetch('https://workoutapi20220309144340.azurewebsites.net/api/activities', {
             method: 'POST',

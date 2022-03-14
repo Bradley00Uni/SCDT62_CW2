@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { Text, TextInput, View, StyleSheet, Button, Alert, ActivityIndicator, ScrollView, Dimensions } from 'react-native';
 import { Card, Overlay, Header } from 'react-native-elements';
 import {FontAwesome} from '@expo/vector-icons';
@@ -6,17 +6,29 @@ import FlashMessage, { showMessage, hideMessage } from "react-native-flash-messa
 import { Switch, Appbar } from 'react-native-paper';
 
 import Create from './activity/create';
+import Edit from './activity/edit';
 
 const Activities = () => {
     const [loading, setLoading] = useState(true);
     const [activities, setActivities] = useState(null);
-    const [visible, setVisible] = useState(null);
+    const [createVisible, setCreateVisible] = useState(null);
+    const [editVisible, setEditVisible] = useState(null);
     const [returned, setReturned] = useState('')
 
-    const [isSwitchOn, setIsSwitchOn] = useState(false);
+    const [toEdit, setToEdit] = useState(null)
+
+    const isInitialMount = useRef(true);
 
     useEffect(() => {
-        //https://workoutapi20220309144340.azurewebsites.net
+        if (isInitialMount.current) {
+            isInitialMount.current = false;
+            setEditVisible(false)
+         } else {
+            setEditVisible(true)
+         }
+    }, [toEdit])
+
+    useEffect(() => {
         return fetch('https://workoutapi20220309144340.azurewebsites.net/api/activities').then( (response) => response.json()).then( (responseJson) => {
             setActivities(responseJson)
             setLoading(false)
@@ -34,55 +46,32 @@ const Activities = () => {
         )
     }
     else{
-
-        let acts;
-            acts = activities.map((val, key) => {
-                if(!isSwitchOn){
+            let acts = activities.map((val, key) => {
                     return(
                         <View key={key}> 
                             <Card key={key} style={styles.item} containerStyle={{backgroundColor: '#daeaf6'}}>
                                 <Card.Title h5>{val.name} ({val.type})</Card.Title>
                                 <Card.Divider />
-                                <View style={{textAlign: 'center',}}>
+                                <View style={{textAlign: 'center', justifyContent: 'flex-start'}}>
                                     <Text>{val.description}</Text>
                                 </View>     
-                            </Card>
-                        </View>
-                    )
-                }
-                else{
-                    return(
-                        <View key={key}>
-                            <Card key={key} style={styles.item} containerStyle={{backgroundColor: '#FFC8A2'}}>
-                                <Card.Title h5>Activity: {val.id}</Card.Title>
-                                <Card.Divider />
-                                <TextInput style={styles.input} placeholder={val.name}></TextInput>
-                                <TextInput style={styles.input} placeholder={val.description}></TextInput>
-                                <TextInput style={styles.input} placeholder={val.type}></TextInput>
-                                <View style={{flexDirection: 'row', marginLeft: 90}}>
-                                    <Button title="Update Activity" style={{justifyContent: 'flex-start'}} color="orange" />
+                                <View style={{flexDirection: 'row', justifyContent: 'flex-end'}}>
+                                    <FontAwesome.Button name='pencil' style={{justifyContent: 'flex-start', backgroundColor: 'orange'}} onPress={() => setToEdit(val)} />
                                     <FontAwesome.Button name='trash-o' style={{justifyContent: 'flex-end', backgroundColor: 'red'}} onPress={() => deleteActivity(val.id)} />
                                 </View>
                             </Card>
                         </View>
                     )
-                }
             })
 
        const onToggleSwitch = () => setIsSwitchOn(!isSwitchOn)
-
-        const TopBar= () => {
-            return (
-               <Appbar.Header style={{width: Dimensions.get('window').width, backgroundColor: '#ACDEAA'}}>
-                   <Appbar.Action icon="plus" onPress={toggleOverlay} accessibiltyLevel />
-                   <Appbar.Content title="Activities" subtitle={'Activities are used when creating a Workout'} />               
-                   <Switch value={isSwitchOn} onValueChange={onToggleSwitch} />
-               </Appbar.Header>
-            )
-        }
         
-        const toggleOverlay = () => {
-            setVisible(!visible);
+        const toggleCreate = () => {
+            setCreateVisible(!createVisible)
+        }
+
+        const toggleEdit = () => {
+            setEditVisible(false)
         }
 
         const deleteActivity = async (id) => {
@@ -94,7 +83,7 @@ const Activities = () => {
             })
             let result = await response
 
-            if(result){
+            if(result.status == 204){
                 setReturned("Success")
                 showMessage({
                     message: "Activity Deleted",
@@ -119,11 +108,11 @@ const Activities = () => {
         return (
             <View style={styles.container}>
                 <Appbar.Header style={{width: Dimensions.get('window').width, backgroundColor: '#ACDEAA'}}>
-                   <Appbar.Action icon="plus" onPress={toggleOverlay} accessibiltyLevel />
+                   <Appbar.Action icon="plus" onPress={toggleCreate} accessibiltyLevel />
                    <Appbar.Content title="Activities" subtitle={'Activities are used when creating a Workout'} />               
-                   <Switch value={isSwitchOn} onValueChange={onToggleSwitch} />
                </Appbar.Header>
-                <Overlay isVisible={visible} onBackdropPress={toggleOverlay}><Create /></Overlay>
+                <Overlay isVisible={createVisible} onBackdropPress={toggleCreate}><Create /></Overlay>
+                <Overlay isVisible={editVisible} onBackdropPress={toggleEdit} ><Edit activ={toEdit} /></Overlay>
                 <ScrollView style={styles.scrolling}>
                     {acts}
                 </ScrollView>
@@ -158,6 +147,15 @@ const styles = StyleSheet.create({
       textAlign: 'center',
       borderRadius: 10,
     },
+    input_multi: {
+        height: 60,
+        backgroundColor: 'white',
+        marginLeft: 40,
+        marginRight: 40,
+        marginBottom: 15,
+        textAlign: 'center',
+        borderRadius: 10,
+      },
     item: {
         backgroundColor: 'green',
         flexDirection: 'row',
