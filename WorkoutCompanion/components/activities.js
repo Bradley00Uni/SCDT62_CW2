@@ -48,7 +48,7 @@ const Activities = () => {
                                 </View>     
                                 <View style={{flexDirection: 'row', justifyContent: 'flex-end'}}>
                                     <FontAwesome.Button name='pencil' style={{justifyContent: 'flex-start', backgroundColor: 'orange'}} onPress={() => {setToEdit(val); setEditVisible(true);}} />
-                                    <FontAwesome.Button name='trash-o' style={{justifyContent: 'flex-end', backgroundColor: 'red'}} onPress={() => deleteActivity(val.id)} />
+                                    <FontAwesome.Button name='trash-o' style={{justifyContent: 'flex-end', backgroundColor: 'red'}} onPress={() => deleteConfirm(val)} />
                                 </View>
                             </Card>
                         </View>
@@ -63,7 +63,15 @@ const Activities = () => {
             setEditVisible(false)
         }
 
-       
+        const deleteConfirm = (val) => {
+            return Alert.alert(
+                "Are you sure?",
+                `Are you sure you want to delete Activity '${val.name}'?`,
+                [
+                    {text: "Yes", onPress: () => {deleteActivity(val.id);}}, {text: "No"}
+                ]
+            )
+        }
 
         const deleteActivity = async (id) => {
             let data = id;
