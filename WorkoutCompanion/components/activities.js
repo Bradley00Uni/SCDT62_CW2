@@ -20,15 +20,6 @@ const Activities = () => {
     const isInitialMount = useRef(true);
 
     useEffect(() => {
-        if (isInitialMount.current) {
-            isInitialMount.current = false;
-            setEditVisible(false)
-         } else {
-            setEditVisible(true)
-         }
-    }, [toEdit])
-
-    useEffect(() => {
         return fetch('https://workoutapi20220309144340.azurewebsites.net/api/activities').then( (response) => response.json()).then( (responseJson) => {
             setActivities(responseJson)
             setLoading(false)
@@ -56,15 +47,13 @@ const Activities = () => {
                                     <Text>{val.description}</Text>
                                 </View>     
                                 <View style={{flexDirection: 'row', justifyContent: 'flex-end'}}>
-                                    <FontAwesome.Button name='pencil' style={{justifyContent: 'flex-start', backgroundColor: 'orange'}} onPress={() => setToEdit(val)} />
+                                    <FontAwesome.Button name='pencil' style={{justifyContent: 'flex-start', backgroundColor: 'orange'}} onPress={() => {setToEdit(val); setEditVisible(true);}} />
                                     <FontAwesome.Button name='trash-o' style={{justifyContent: 'flex-end', backgroundColor: 'red'}} onPress={() => deleteActivity(val.id)} />
                                 </View>
                             </Card>
                         </View>
                     )
             })
-
-       const onToggleSwitch = () => setIsSwitchOn(!isSwitchOn)
         
         const toggleCreate = () => {
             setCreateVisible(!createVisible)
@@ -73,6 +62,8 @@ const Activities = () => {
         const toggleEdit = () => {
             setEditVisible(false)
         }
+
+       
 
         const deleteActivity = async (id) => {
             let data = id;
