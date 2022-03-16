@@ -46,7 +46,7 @@ const Activities = () => {
                                 </View>     
                                 <View style={{flexDirection: 'row', justifyContent: 'flex-end'}}>
                                     <FontAwesome.Button name='pencil' style={{justifyContent: 'flex-start', backgroundColor: 'orange'}} onPress={() => {setToEdit(val); setEditVisible(true);}} />
-                                    <FontAwesome.Button name='trash-o' style={{justifyContent: 'flex-end', backgroundColor: 'red'}} onPress={() => deleteConfirm(val)} />
+                                    <FontAwesome.Button name='trash-o' style={{justifyContent: 'flex-end', backgroundColor: '#ff4034'}} onPress={() => deleteConfirm(val)} />
                                 </View>
                             </Card>
                         </View>

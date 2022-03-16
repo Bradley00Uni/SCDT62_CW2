@@ -14,7 +14,7 @@ export default function App() {
   const [routes] = useState([
     {key: 'home', title: 'Home', icon: 'home', color: '#9cadce'},
     {key: 'activities', title: 'Activities', icon: 'walk', color: '#ACDEAA'},
-    {key: 'workouts', title: 'Workouts', icon: 'routes-clock', color: '#FF968A'},
+    {key: 'workouts', title: 'Workouts', icon: 'routes-clock', color: '#f06c64'},
     {key: 'profile', title: 'Profile', icon: 'account', color: '#CBAACB'},
   ]);
 
