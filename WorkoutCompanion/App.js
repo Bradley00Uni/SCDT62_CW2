@@ -2,10 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { View, StyleSheet, Container } from 'react-native';
 import { BottomNavigation, Text } from 'react-native-paper';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+
 import Activities from './components/activities';
+import Workouts from './components/workouts';
 
 const HomeRoute = () => <Text>Home</Text>;
-const WorkoutRoute = () => <Text>Workouts</Text>;
 const ProfileRoute = () => <Text>Profile</Text>;
 
 export default function App() {
@@ -20,7 +21,7 @@ export default function App() {
   const renderScene = BottomNavigation.SceneMap({
     home: HomeRoute,
     activities: Activities,
-    workouts: WorkoutRoute,
+    workouts: Workouts,
     profile: ProfileRoute,
   });
 

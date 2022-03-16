@@ -63,7 +63,7 @@ namespace WorkoutAPI.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> PostExerciseModel(int id, ExerciseModel ExerciseModel)
+        public async Task<IActionResult> PostExerciseModel(ExerciseModel ExerciseModel)
         {
             ExerciseModel.Activity = await _context.Activities.FindAsync(ExerciseModel.ActivityID);
             _context.Exercises.Add(ExerciseModel);

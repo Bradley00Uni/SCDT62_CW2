@@ -24,9 +24,22 @@ namespace WorkoutAPI.Controllers
 
         // GET: api/Produc
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<WorkoutModel>>> GetWorkouts()
+        public async Task<ActionResult<IEnumerable<WorkoutViewModel>>> GetWorkouts()
         {
-            return await _context.Workouts.ToListAsync();
+            var ExerciseModels = new List<ExerciseModel>();
+            var Workouts = new List<WorkoutViewModel>();
+
+            var WorkoutModels = await _context.Workouts.ToListAsync();
+
+            if(WorkoutModels == null) { return NotFound(); }
+
+            foreach(var model in WorkoutModels)
+            {
+                var workoutExercises = await _context.Exercises.Where(x => x.WorkoutID == model.ID).ToListAsync();
+
+                Workouts.Add(new WorkoutViewModel() { Workout = model, Exercises = workoutExercises });
+            }
+            return Workouts;
         }
 
         // GET: api/Produc/5
