@@ -13,8 +13,8 @@ export default function App() {
   const [index, setIndex] = useState(0);
   const [routes] = useState([
     {key: 'home', title: 'Home', icon: 'home', color: '#9cadce'},
-    {key: 'activities', title: 'Activities', icon: 'walk', color: '#ACDEAA'},
-    {key: 'workouts', title: 'Workouts', icon: 'routes-clock', color: '#f06c64'},
+    {key: 'activities', title: 'Activities', icon: 'walk', color: '#f06c64'},
+    {key: 'workouts', title: 'Workouts', icon: 'routes-clock', color: '#ACDEAA'},
     {key: 'profile', title: 'Profile', icon: 'account', color: '#CBAACB'},
   ]);
 

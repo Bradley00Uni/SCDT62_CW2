@@ -27,7 +27,6 @@ const Workouts = () => {
     const convertDate =(date) => {
 
         var newDate = date.toString()
-        var year = newDate.substring(0,4)
         var month = newDate.substring(5,7);
         var day = newDate.substring(8,10);
 
@@ -54,17 +53,17 @@ const Workouts = () => {
             case "11": month = "November"; break;
             case "12": month = "December"; break;
         }
-        newDate = month + " " + day + ", " + year
+        newDate = month + " " + day
         return newDate
     }
 
     const WelcomeAlert = () => {
         let last = convertDate(workouts[workouts.length - 1].workout.workoutCreated)
         return (
-            <Card containerStyle={{backgroundColor: '#f89c9c'}}>
-                <Card.Title style={{color: 'white'}} h3>Been Busy?</Card.Title>
-                <Card.Divider color='white' />
-                <Text style={styles.greeting_text}>Your last workout was on {last.slice(0, -6)}, why not add a new one now?</Text>
+            <Card containerStyle={{backgroundColor: '#b0dcac', borderColor: '#47504f', borderWidth: 2, }}>
+                <Card.Title style={{color: '#47504f'}} h3>Been Busy?</Card.Title>
+                <Card.Divider color='#47504f' />
+                <Text style={styles.greeting_text}>Your last workout was on {last}, why not add a new one now?</Text>
                 <Button title="Create" color={'#28b44c'} ></Button>
             </Card>
         )
@@ -92,14 +91,14 @@ const Workouts = () => {
             let date = convertDate(val.workout.workoutCreated) 
            return(
                <View key={key}>
-                   <Card key={key} style={styles.item} containerStyle={{backgroundColor: '#F1E0B0'}}>
-                       <Card.Title h4>{date}</Card.Title>
+                   <Card key={key} style={styles.item} containerStyle={{backgroundColor: '#F1E0B0', borderColor: '#47504f', borderWidth: 2, borderRadius: 18,}}>
+                       <Card.Title h4>{date} Workout</Card.Title>
                        <Card.Divider />
                        <Text style={styles.item_text}><MaterialCommunityIcons name='walk' size={20} /> Number of Activities: {val.exercises.length}</Text>
                        <Text style={styles.item_text}><MaterialCommunityIcons name='clock-outline' size={20} /> Total Duration: {totalDuration} minutes</Text>
                        <View style={{flexDirection: 'row', justifyContent: 'space-between', marginTop: 15}}>
-                           <Button title="More Details" color={'#f06c64'} onPress={() => {setCurrentWorkout(val); toggleDetails()}} />
-                           <Button title="Delete Workout" color={'#ff4034'} />
+                           <Button title="More Details" color={'#f8ac4c'} onPress={() => {setCurrentWorkout(val); toggleDetails()}} />
+                           <Button title="Delete Workout" color={'#FF6961'} />
                            <FontAwesome.Button name='facebook' style={{backgroundColor: '#4864ac', paddingHorizontal: 20, }}>Share</FontAwesome.Button>
                        </View>
                    </Card>
@@ -109,16 +108,19 @@ const Workouts = () => {
 
     return (
         <View style={styles.container}>
-            <Appbar.Header style={{width: Dimensions.get('window').width, backgroundColor: '#f06c64'}}>
+            <Appbar.Header style={styles.workout_header}>
+                <Appbar.Action icon="plus" accessibiltyLevel />
                 <Appbar.Content title="Workouts" subtitle={'lorem ipsum'} />
             </Appbar.Header>
             <ScrollView style={styles.scrolling}>
                 <WelcomeAlert />
                 {works}
             </ScrollView>
-            <Overlay isVisible={detailsVisible} fullScreen >
-                <Button onPress={() => toggleDetails()} title={"Go Back"} />
+            <Overlay isVisible={detailsVisible} fullScreen overlayStyle={{backgroundColor: '#d8ecac'}} >
                 <Details current={currentWorkout} />
+                <View style={{marginTop: 30}}>
+                    <Button color={'#FF6961'} onPress={() => toggleDetails()} title={"Go Back"} />
+                </View>
             </Overlay>
 
 
@@ -133,6 +135,7 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
+        backgroundColor: '#d8ecac'
         //padding: 8,
       },
       item: {
@@ -152,15 +155,19 @@ const styles = StyleSheet.create({
         fontSize: 18,
         marginVertical: 6,
         textAlign: 'center',
-        color: 'white'
+        color: '#47504f'
     },
     overlay:{
-        backgroundColor: 'rgba(0,0,0,0.2)',
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
         backgroundColor: 'green',
-    }
+    },
+    workout_header: {
+        flexDirection: 'row', 
+        backgroundColor: '#ACDEAA', 
+        justifyContent: 'center',
+        padding: 8,
+        alignItems: 'center',
+        width: Dimensions.get('window').width,
+    },
 })
 
 export default Workouts

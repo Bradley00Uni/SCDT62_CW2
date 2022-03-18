@@ -104,7 +104,7 @@ const Activities = () => {
 
         return (
             <View style={styles.container}>
-                <Appbar.Header style={{width: Dimensions.get('window').width, backgroundColor: '#ACDEAA'}}>
+                <Appbar.Header style={{width: Dimensions.get('window').width, backgroundColor: '#f06c64'}}>
                    <Appbar.Action icon="plus" onPress={toggleCreate} accessibiltyLevel />
                    <Appbar.Content title="Activities" subtitle={'Activities are used when creating a Workout'} />               
                </Appbar.Header>
