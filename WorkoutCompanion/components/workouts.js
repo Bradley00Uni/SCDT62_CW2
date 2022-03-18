@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Text, TextInput, View, StyleSheet, Button, Alert, ActivityIndicator, ScrollView, Dimensions } from 'react-native';
-import { Card, Overlay, Header } from 'react-native-elements';
+import { Card, Overlay } from 'react-native-elements';
 import { Appbar } from 'react-native-paper';
 import FlashMessage, { showMessage, hideMessage } from "react-native-flash-message";
 import {FontAwesome, MaterialCommunityIcons} from '@expo/vector-icons';
@@ -11,6 +11,9 @@ const Workouts = () => {
     const [workouts, setWorkouts] = useState(null);
 
     const [loading, setLoading] = useState(true)
+
+    const [detailsVisible, setDetailsVisible] = useState(false);
+    const [currentWorkout, setCurrentWorkout] = useState(null);
 
     useEffect(() => {
         return fetch('https://workoutapi20220309144340.azurewebsites.net/api/workouts').then( (response) => response.json()).then( (responseJson) => {
@@ -67,6 +70,9 @@ const Workouts = () => {
         )
     }
 
+    const toggleDetails = () => {
+        setDetailsVisible(!detailsVisible)
+    }
 
 
    if(loading){
@@ -80,8 +86,8 @@ const Workouts = () => {
        let works = workouts.map((val, key) => {
 
             let totalDuration = 0;
-            val.exercises.forEach(element => {
-                totalDuration = totalDuration + element.duration
+            val.exercises.forEach(e => {
+                totalDuration = totalDuration + e.duration
             });
             let date = convertDate(val.workout.workoutCreated) 
            return(
@@ -92,7 +98,7 @@ const Workouts = () => {
                        <Text style={styles.item_text}><MaterialCommunityIcons name='walk' size={20} /> Number of Activities: {val.exercises.length}</Text>
                        <Text style={styles.item_text}><MaterialCommunityIcons name='clock-outline' size={20} /> Total Duration: {totalDuration} minutes</Text>
                        <View style={{flexDirection: 'row', justifyContent: 'space-between', marginTop: 15}}>
-                           <Button title="More Details" color={'#f06c64'} />
+                           <Button title="More Details" color={'#f06c64'} onPress={() => {setCurrentWorkout(val); toggleDetails()}} />
                            <Button title="Delete Workout" color={'#ff4034'} />
                            <FontAwesome.Button name='facebook' style={{backgroundColor: '#4864ac', paddingHorizontal: 20, }}>Share</FontAwesome.Button>
                        </View>
@@ -108,8 +114,14 @@ const Workouts = () => {
             </Appbar.Header>
             <ScrollView style={styles.scrolling}>
                 <WelcomeAlert />
-                    {works}
-                </ScrollView>
+                {works}
+            </ScrollView>
+            <Overlay isVisible={detailsVisible} fullScreen >
+                <Button onPress={() => toggleDetails()} title={"Go Back"} />
+                <Details current={currentWorkout} />
+            </Overlay>
+
+
             <FlashMessage position="top" />
         </View>
     )
@@ -124,7 +136,6 @@ const styles = StyleSheet.create({
         //padding: 8,
       },
       item: {
-        backgroundColor: 'green',
         flexDirection: 'row',
         borderRadius: 80,
         height: 150,
@@ -143,6 +154,13 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         color: 'white'
     },
+    overlay:{
+        backgroundColor: 'rgba(0,0,0,0.2)',
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'green',
+    }
 })
 
 export default Workouts

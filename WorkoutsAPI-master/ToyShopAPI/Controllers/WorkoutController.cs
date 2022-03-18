@@ -35,7 +35,7 @@ namespace WorkoutAPI.Controllers
 
             foreach(var model in WorkoutModels)
             {
-                var workoutExercises = await _context.Exercises.Where(x => x.WorkoutID == model.ID).ToListAsync();
+                var workoutExercises = await _context.Exercises.Include("Activity").Where(x => x.WorkoutID == model.ID).ToListAsync();
 
                 Workouts.Add(new WorkoutViewModel() { Workout = model, Exercises = workoutExercises });
             }
