@@ -6,6 +6,7 @@ import FlashMessage, { showMessage, hideMessage } from "react-native-flash-messa
 import {FontAwesome, MaterialCommunityIcons} from '@expo/vector-icons';
 
 import Details from './workout/details';
+import Create from './workout/create';
 
 const Workouts = () => {
     const [workouts, setWorkouts] = useState(null);
@@ -13,6 +14,8 @@ const Workouts = () => {
     const [loading, setLoading] = useState(true)
 
     const [detailsVisible, setDetailsVisible] = useState(false);
+    const [createVisible, setCreateVisible] = useState(false);
+
     const [currentWorkout, setCurrentWorkout] = useState(null);
 
     useEffect(() => {
@@ -57,21 +60,8 @@ const Workouts = () => {
         return newDate
     }
 
-    const WelcomeAlert = () => {
-        let last = convertDate(workouts[workouts.length - 1].workout.workoutCreated)
-        return (
-            <Card containerStyle={{backgroundColor: '#b0dcac', borderColor: '#47504f', borderWidth: 2, }}>
-                <Card.Title style={{color: '#47504f'}} h3>Been Busy?</Card.Title>
-                <Card.Divider color='#47504f' />
-                <Text style={styles.greeting_text}>Your last workout was on {last}, why not add a new one now?</Text>
-                <Button title="Create" color={'#28b44c'} ></Button>
-            </Card>
-        )
-    }
-
-    const toggleDetails = () => {
-        setDetailsVisible(!detailsVisible)
-    }
+    const toggleDetails = () => { setDetailsVisible(!detailsVisible) }
+    const toggleCreate = () => { setCreateVisible(!createVisible) }
 
 
    if(loading){
@@ -106,16 +96,25 @@ const Workouts = () => {
            )
        })
 
+    let last = convertDate(workouts[workouts.length - 1].workout.workoutCreated)
     return (
+        
         <View style={styles.container}>
             <Appbar.Header style={styles.workout_header}>
                 <Appbar.Action icon="plus" accessibiltyLevel />
                 <Appbar.Content title="Workouts" subtitle={'lorem ipsum'} />
             </Appbar.Header>
+
             <ScrollView style={styles.scrolling}>
-                <WelcomeAlert />
+                <Card containerStyle={{backgroundColor: '#b0dcac', borderColor: '#47504f', borderWidth: 2, }}>
+                    <Card.Title style={{color: '#47504f'}} h3>Been Busy?</Card.Title>
+                    <Card.Divider color='#47504f' />
+                    <Text style={styles.greeting_text}>Your last workout was on {last}, why not add a new one now?</Text>
+                    <Button title="Create" color={'#28b44c'} onPress={() => toggleCreate()} ></Button>
+                </Card>
                 {works}
             </ScrollView>
+
             <Overlay isVisible={detailsVisible} fullScreen overlayStyle={{backgroundColor: '#d8ecac'}} >
                 <Details current={currentWorkout} />
                 <View style={{marginTop: 30}}>
@@ -123,6 +122,12 @@ const Workouts = () => {
                 </View>
             </Overlay>
 
+            <Overlay isVisible={createVisible} fullScreen overlayStyle={{backgroundColor: '#d8ecac'}} >
+                <Create />
+                <View style={{marginTop: 30}}>
+                    <Button color={'#FF6961'} onPress={() => setCreateVisible(false)} title={"Go Back"} />
+                </View>
+            </Overlay>
 
             <FlashMessage position="top" />
         </View>
