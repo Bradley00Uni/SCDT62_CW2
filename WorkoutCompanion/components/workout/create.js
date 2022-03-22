@@ -7,7 +7,6 @@ import DateTimePickerModal from 'react-native-modal-datetime-picker';
 
 const Create = () => {
     const [activities, setActivities] = useState(['','']);
-    const [exercises, setExercises] = useState(null)
     const [loading, setLoading] = useState(true)
     const [returned, setReturned] = useState('')
     const [datePickerVisible, setDatePickerVisible] = useState(false)
@@ -82,7 +81,6 @@ const Create = () => {
 
         if(response.status == 201){
             setReturned("Success")
-            setExercises(exercises + result)
             showMessage({
                 message: "Creation Successful",
                 type: "success"

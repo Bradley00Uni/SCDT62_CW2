@@ -72,7 +72,7 @@ const Workouts = () => {
        )
    }
    else{
-       let works = workouts.map((val, key) => {
+       let works = workouts.reverse().map((val, key) => {
 
             let totalDuration = 0;
             val.exercises.forEach(e => {
@@ -96,7 +96,7 @@ const Workouts = () => {
            )
        })
 
-    let last = convertDate(workouts[workouts.length - 1].workout.workoutCreated)
+    let last = convertDate(workouts[0].workout.workoutCreated)
     return (
         
         <View style={styles.container}>
@@ -129,7 +129,7 @@ const Workouts = () => {
                 </View>
             </Overlay>
 
-            <FlashMessage position="top" />
+            
         </View>
     )
    }
