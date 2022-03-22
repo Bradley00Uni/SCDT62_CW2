@@ -4,6 +4,7 @@ import { Card, Overlay } from 'react-native-elements';
 import { Appbar } from 'react-native-paper';
 import FlashMessage, { showMessage, hideMessage } from "react-native-flash-message";
 import {FontAwesome, MaterialCommunityIcons} from '@expo/vector-icons';
+import DateTimePickerModal from 'react-native-modal-datetime-picker';
 
 import Details from './workout/details';
 import Create from './workout/create';
@@ -12,11 +13,14 @@ const Workouts = () => {
     const [workouts, setWorkouts] = useState(null);
 
     const [loading, setLoading] = useState(true)
+    const [returned, setReturned] = useState('')
 
     const [detailsVisible, setDetailsVisible] = useState(false);
     const [createVisible, setCreateVisible] = useState(false);
 
     const [currentWorkout, setCurrentWorkout] = useState(null);
+
+    const [datePickerVisible, setDatePickerVisible] = useState(false)
 
     useEffect(() => {
         return fetch('https://workoutapi20220309144340.azurewebsites.net/api/workouts').then( (response) => response.json()).then( (responseJson) => {
@@ -26,6 +30,44 @@ const Workouts = () => {
         })
         .catch((error) => {console.log(error)})
     },)
+
+    const setDatePicker =() => {setDatePickerVisible(!datePickerVisible)}
+    const sendWorkout = async (d) => {
+        let data = {
+            "workoutCreated" : d
+        }
+
+        const response = await fetch('https://workoutapi20220309144340.azurewebsites.net/api/workouts', {
+            method: 'POST',
+            body: JSON.stringify(data),
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        })
+        let result = await response.json()
+        console.log(response.status)
+
+        if(response.status == 201){
+            setReturned("Success")
+            showMessage({
+                message: "Creation Successful",
+                type: "success"
+            });
+        }
+        else{
+            var errors = Object.values(result.errors);
+            var error_messages = ''
+      
+            for (let e of errors){
+              error_messages += e;
+            }
+            setReturned(error_messages)
+            showMessage({
+                message: error_messages,
+                type: "danger"
+            });
+        }
+    }
 
     const convertDate =(date) => {
 
@@ -87,9 +129,9 @@ const Workouts = () => {
                        <Text style={styles.item_text}><MaterialCommunityIcons name='walk' size={20} /> Number of Activities: {val.exercises.length}</Text>
                        <Text style={styles.item_text}><MaterialCommunityIcons name='clock-outline' size={20} /> Total Duration: {totalDuration} minutes</Text>
                        <View style={{flexDirection: 'row', justifyContent: 'space-between', marginTop: 15}}>
-                           <Button title="More Details" color={'#f8ac4c'} onPress={() => {setCurrentWorkout(val); toggleDetails()}} />
-                           <Button title="Delete Workout" color={'#FF6961'} />
-                           <FontAwesome.Button name='facebook' style={{backgroundColor: '#4864ac', paddingHorizontal: 20, }}>Share</FontAwesome.Button>
+                            <Button title="Add Activities" color={'#18a4bc'} onPress={() =>{setCurrentWorkout(val); toggleCreate()}} />
+                            <Button title="More Details" color={'#f8ac4c'} onPress={() => {setCurrentWorkout(val); toggleDetails()}} />
+                            <Button title="Delete Workout" color={'#FF6961'} />
                        </View>
                    </Card>
                </View>
@@ -101,7 +143,7 @@ const Workouts = () => {
         
         <View style={styles.container}>
             <Appbar.Header style={styles.workout_header}>
-                <Appbar.Action icon="plus" accessibiltyLevel />
+                <Appbar.Action icon="plus" accessibiltyLevel onPress={() => setDatePicker()} />
                 <Appbar.Content title="Workouts" subtitle={'lorem ipsum'} />
             </Appbar.Header>
 
@@ -110,7 +152,7 @@ const Workouts = () => {
                     <Card.Title style={{color: '#47504f'}} h3>Been Busy?</Card.Title>
                     <Card.Divider color='#47504f' />
                     <Text style={styles.greeting_text}>Your last workout was on {last}, why not add a new one now?</Text>
-                    <Button title="Create" color={'#28b44c'} onPress={() => toggleCreate()} ></Button>
+                    <Button title="Create" color={'#28b44c'} onPress={() => setDatePicker()} ></Button>
                 </Card>
                 {works}
             </ScrollView>
@@ -123,12 +165,13 @@ const Workouts = () => {
             </Overlay>
 
             <Overlay isVisible={createVisible} fullScreen overlayStyle={{backgroundColor: '#d8ecac'}} >
-                <Create />
+                <Create current={currentWorkout} />
                 <View style={{marginTop: 30}}>
                     <Button color={'#FF6961'} onPress={() => setCreateVisible(false)} title={"Go Back"} />
                 </View>
             </Overlay>
 
+            <DateTimePickerModal isVisible={datePickerVisible} mode="date" onConfirm={(date) => {setDatePicker(); sendWorkout(date)}} onCancel={() => setDatePicker()} />
             
         </View>
     )
