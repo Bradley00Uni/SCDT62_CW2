@@ -110,36 +110,38 @@ const Create = (current) => {
 
         let acts = activities.map((val, key) => {
             return (
-                <Card style={styles.item} key={key}>
-                    <Card.Title h5>{val.name}</Card.Title>
-                    <Text>Type: {val.type}</Text>
-                    <Text>Description: {val.description}</Text>
-                    <TextInput style={styles.input} placeholder="Duration" onChangeText={(d) => setChosenDuration(d)} />
-                    <Button title="Add Workout" onPress={() => addActivity(val.id)} />
+                <Card style={styles.item} key={key} containerStyle={{backgroundColor: '#ccf6e0', borderColor: '#47504f', borderWidth: 1, borderRadius: 15,}}>
+                    <Card.Title h5>{val.name} ({val.type})</Card.Title>
+                    <Text style={{textAlign: 'center'}}>{val.description}</Text>
+                    <TextInput style={styles.input} placeholder="Duration" keyboardType='numeric' onChangeText={(d) => setChosenDuration(d)} />
+                    <View style={{width: 200, marginLeft: 60}}>
+                    <Button title="Add Workout" color={'#28b44c'} onPress={() => addActivity(val.id)} />
+                    </View>
                 </Card>
             )
         })
 
         let exercs = exercises.map((e) => {
             return (
-                <Card key={e.id} style={styles.item} containerStyle={{backgroundColor: '#ACDEAA', borderColor: '#47504f', borderWidth: 2, borderRadius: 18,}}>
-                    <Card.Title h5 style={{fontSize: 18}}>{e.activity.name}</Card.Title>
-                    <Card.Divider color='black' />
+                <Card key={e.id} style={styles.item} containerStyle={{backgroundColor: '#ccf6e0', borderColor: '#47504f', borderWidth: 1, borderRadius: 15,}}>
                     <View style={{flexDirection: 'row', justifyContent: 'space-around'}}>
+                        <Text style={{fontSize: 16, fontWeight: 'bold'}}>{e.activity.name}</Text>
                         <Text style={{fontSize: 16,}}><Entypo name='stopwatch' size={14} /> Duration: {e.duration} minutes</Text>
-                        <Text style={{fontSize:15}}>Type: {e.activity.type}</Text>
                     </View>
                 </Card>
             )
         })
 
         return (
-            <View>
+            <ScrollView>
                 <Text style={styles.title}>{convertDate(workout.workoutCreated)} Workout</Text>
+                <Text style={styles.subtitle}>Current Activities</Text>
+                <Text style={{textAlign: 'center'}}>These are the activities already registered to this workout</Text>
                 {exercs}
-
+                <Text style={styles.subtitle}>Add a New Activity</Text>
+                <Text style={{textAlign: 'center'}}>Enter a Duration to add the Activity to the Workout</Text>
                 {acts}
-            </View>
+            </ScrollView>
         )
     }
     else{
@@ -160,16 +162,21 @@ const styles = StyleSheet.create({
         marginLeft: 40,
         marginRight: 40,
         marginTop: 15,
+        marginBottom: 15,
         textAlign: 'center',
-        borderRadius: 10,
+        borderColor: '#47504f', 
+        borderWidth: 1, 
+        borderRadius: 15
       },
       title: {
         fontSize: 30,
         textAlign: 'center'
     },
     subtitle: {
-        fontSize: 30,
-        textDecorationLine: 'underline'
+        fontSize: 22,
+        textDecorationLine: 'underline',
+        textAlign: 'center',
+        marginTop: 20,
     },
     scrolling: {
         width: Dimensions.get('window').width / 1.2,
@@ -177,7 +184,6 @@ const styles = StyleSheet.create({
     item: {
         flexDirection: 'row',
         borderRadius: 80,
-        height: 150,
     },
     button: {
         alignItems: "center",

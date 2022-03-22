@@ -105,6 +105,47 @@ const Workouts = () => {
     const toggleDetails = () => { setDetailsVisible(!detailsVisible) }
     const toggleCreate = () => { setCreateVisible(!createVisible) }
 
+    const deleteConfirm = (val) => {
+        return Alert.alert(
+            "Are you sure?",
+            "Are you sure you want to delete this Workout?",
+            [
+                {text: "Yes", onPress: () => {deleteWorkout(val.workout.id)}}, {text: "No"}
+            ]
+        )
+    }
+
+    const deleteWorkout = async (id) => {
+        let data = id;
+
+        const response = await fetch(`https://workoutapi20220309144340.azurewebsites.net/api/workouts/${data}`, {
+            method: 'DELETE',
+            body: data
+        })
+        let result = await response
+
+        if(result.status == 204){
+            setReturned("Success")
+            showMessage({
+                message: "Activity Deleted",
+                type: "success"
+            });
+        }
+        else{
+            var errors = Object.values(result.errors);
+            var error_messages = ''
+      
+            for (let e of errors){
+              error_messages += e;
+            }
+            setReturned(error_messages)
+            showMessage({
+                message: error_messages,
+                type: "danger"
+            });
+        }
+    }
+
 
    if(loading){
        return (
@@ -131,7 +172,7 @@ const Workouts = () => {
                        <View style={{flexDirection: 'row', justifyContent: 'space-between', marginTop: 15}}>
                             <Button title="Add Activities" color={'#18a4bc'} onPress={() =>{setCurrentWorkout(val); toggleCreate()}} />
                             <Button title="More Details" color={'#f8ac4c'} onPress={() => {setCurrentWorkout(val); toggleDetails()}} />
-                            <Button title="Delete Workout" color={'#FF6961'} />
+                            <Button title="Delete Workout" color={'#FF6961'} onPress={() => deleteConfirm(val)} />
                        </View>
                    </Card>
                </View>
