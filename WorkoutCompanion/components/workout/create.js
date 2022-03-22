@@ -7,22 +7,138 @@ import DateTimePickerModal from 'react-native-modal-datetime-picker';
 
 const Create = (current) => {
 
-    const [workout, setWorkout] = useState(null)
+    const [workout, setWorkout] = useState(current.current.workout)
+    const [exercises, setExercises] = useState(current.current.exercises)
+    const [activities, setActivities] = useState(null)
+
     const [loading, setLoading] = useState(true)
+    const [returned, setReturned] = useState('')
+
+    const [chosenDuration, setChosenDuration] = useState(null)
+
 
     useEffect(() => {
-        return fetch(`https://workoutapi20220309144340.azurewebsites.net/api/workouts/${current.current.workout.id}`).then( (response) => response.json()).then( (responseJson) => {
-            setWorkout(responseJson.workout)
+        return fetch('https://workoutapi20220309144340.azurewebsites.net/api/activities').then( (r) => r.json()).then( (rj) => {
+            setActivities(rj)
             setLoading(false)
 
         })
         .catch((error) => {console.log(error)})
-    })
+    }, [])
+
+    const getExercises = () => {
+        return fetch(`https://workoutapi20220309144340.azurewebsites.net/api/workouts/${workout.id}`).then( (r) => r.json()).then( (rj) => {
+            setExercises(rj.exercises)
+
+        })
+        .catch((error) => {console.log(error)})
+    }
+
+    const convertDate =(date) => {
+
+        var newDate = date.toString()
+        var year = newDate.substring(0,4)
+        var month = newDate.substring(5,7);
+        var day = newDate.substring(8,10);
+
+        if(day.charAt(0) == "0"){
+            day = day - day.charAt(0)
+        }
+
+        if(day == "01"||day == "21"||day == "31"){day = day + "st"}
+        else if(day == "02"||day == "22"){day = day + "nd"}
+        else if(day == "03"||day == "23"){day = day + "rd"}
+        else{day = day + "th"}
+
+        switch (month) {
+            case "01": month = "January"; break;
+            case "02": month = "February"; break;
+            case "03": month = "March"; break;
+            case "04": month = "April"; break;
+            case "05": month = "May"; break;
+            case "06": month = "June"; break;
+            case "07": month = "July"; break;
+            case "08": month = "August"; break;
+            case "09": month = "September"; break;
+            case "10": month = "October"; break;
+            case "11": month = "November"; break;
+            case "12": month = "December"; break;
+        }
+        newDate = month + " " + day + ", " + year
+        return newDate
+    }
+
+    const addActivity = async (a) => {
+        let data = {
+            "activityID": a,
+            "workoutID" : workout.id,
+            "duration" : chosenDuration
+        }
+        const response = await fetch('https://workoutapi20220309144340.azurewebsites.net/api/exercises', {
+            method: 'POST',
+            body: JSON.stringify(data),
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        })
+        let result = await response.json()
+
+        if(response.status == 201){
+            setReturned("Success")
+            getExercises()
+            showMessage({
+                message: "Creation Successful",
+                type: "success"
+            });
+        }
+        else{
+            var errors = Object.values(result.errors);
+            var error_messages = ''
+      
+            for (let e of errors){
+              error_messages += e;
+            }
+            setReturned(error_messages)
+            showMessage({
+                message: error_messages,
+                type: "danger"
+            });
+        }
+    }
 
     if((current != null) && (loading == false)){
+
+        let acts = activities.map((val, key) => {
+            return (
+                <Card style={styles.item} key={key}>
+                    <Card.Title h5>{val.name}</Card.Title>
+                    <Text>Type: {val.type}</Text>
+                    <Text>Description: {val.description}</Text>
+                    <TextInput style={styles.input} placeholder="Duration" onChangeText={(d) => setChosenDuration(d)} />
+                    <Button title="Add Workout" onPress={() => addActivity(val.id)} />
+                </Card>
+            )
+        })
+
+        let exercs = exercises.map((e) => {
+            return (
+                <Card key={e.id} style={styles.item} containerStyle={{backgroundColor: '#ACDEAA', borderColor: '#47504f', borderWidth: 2, borderRadius: 18,}}>
+                    <Card.Title h5 style={{fontSize: 18}}>{e.activity.name}</Card.Title>
+                    <Card.Divider color='black' />
+                    <View style={{flexDirection: 'row', justifyContent: 'space-around'}}>
+                        <Text style={{fontSize: 16,}}><Entypo name='stopwatch' size={14} /> Duration: {e.duration} minutes</Text>
+                        <Text style={{fontSize:15}}>Type: {e.activity.type}</Text>
+                    </View>
+                </Card>
+            )
+        })
+
         return (
             <View>
-                <Text style={styles.title}>{workout.workoutCreated} Workout</Text>
+                <Text style={styles.title}>{convertDate(workout.workoutCreated)} Workout</Text>
+                {exercs}
+
+                {acts}
             </View>
         )
     }
@@ -48,7 +164,8 @@ const styles = StyleSheet.create({
         borderRadius: 10,
       },
       title: {
-        fontSize: 40
+        fontSize: 30,
+        textAlign: 'center'
     },
     subtitle: {
         fontSize: 30,
