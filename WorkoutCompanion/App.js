@@ -8,8 +8,8 @@ import RNRestart from 'react-native-restart'
 import Activities from './components/activities';
 import Workouts from './components/workouts';
 import Home from './components/home'
+import Profile from './components/profile';
 
-const ProfileRoute = () => <Text>Profile</Text>;
 export default function App() {
   useEffect(() => {
     readToken()
@@ -18,7 +18,7 @@ export default function App() {
   const STORAGE_TOKEN = '@token'
 
   const [token, setToken] = useState(null)
-  const [loginState, setLoginState] = useState(true)
+  const [loginState, setLoginState] = useState(false)
   const [returned, setReturned] = useState('')
 
   const [firstName, setFirstName] = useState('')
@@ -31,7 +31,7 @@ export default function App() {
     {key: 'home', title: 'Home', icon: 'home', color: '#ff964f'},
     {key: 'activities', title: 'Activities', icon: 'walk', color: '#f06c64'},
     {key: 'workouts', title: 'Workouts', icon: 'routes-clock', color: '#ACDEAA'},
-    {key: 'profile', title: 'Profile', icon: 'account', color: '#CBAACB'},
+    {key: 'profile', title: 'Profile', icon: 'account', color: '#BEA9DF'},
   ]);
 
   const saveToken = async (t) => {
@@ -64,7 +64,7 @@ export default function App() {
     home: Home,
     activities: Activities,
     workouts: Workouts,
-    profile: ProfileRoute,
+    profile: Profile
   });
 
   const loginStateChange = () => {
@@ -105,7 +105,26 @@ export default function App() {
   }
 
   const sendRegister = async () => {
+    let data = {
+      "FirstName" : firstName,
+      "LastName" : lastName,
+      "Email" : email,
+      "Password" : password
+    }
 
+    let response = await fetch('https://workoutapi20220309144340.azurewebsites.net/api/auth/register', {
+      method: 'POST',
+      body: JSON.stringify(data),
+      headers: {
+          'Content-Type': 'application/json'
+      }
+    })
+    let result = await response.json()
+
+    if(response.status == 200){
+      setReturned("Registration Successfull")
+      loginStateChange()
+    }
   }
 
   if(token == null){
@@ -114,17 +133,26 @@ export default function App() {
         <View style={styles.container}>
           <Text>Login</Text>
           <TextInput style={styles.input} placeholder='Email' onChangeText={(email) => setEmail(email)} />
-          <TextInput style={styles.input} placeholder='Password' onChangeText={(password) => setPassword(password)} />
+          <TextInput style={styles.input} secureTextEntry={true} placeholder='Password' onChangeText={(password) => setPassword(password)} />
           <Button title='Login' onPress={(email) => sendLogin(email)} />
-          <Button title='Not a Member? Register' onPress={loginStateChange} />
+
+          <Text style={styles.notation}>Not Already a Member?</Text>
+          <Button title='Register Now' onPress={loginStateChange} />
         </View>
       )
     }
     else{
       return (
         <View style={styles.container}>
-          <Text>Register Screen</Text>
-          <Button title='Login' onPress={loginStateChange} />
+          <Text>Register</Text>
+          <TextInput style={styles.input} placeholder='Email' onChangeText={(email) => setEmail(email)} />
+          <TextInput style={styles.input} secureTextEntry={true} placeholder='Password' onChangeText={(password) => setPassword(password)} />
+          <TextInput style={styles.input} placeholder='Name' onChangeText={(firstName) => setFirstName(firstName)} />
+          <TextInput style={styles.input} placeholder='Surname' onChangeText={(lastName) => setLastName(lastName)} />
+          <Button title='Register' onPress={(email) => sendRegister(email)} />
+
+          <Text style={styles.notation}>Already a Member?</Text>
+          <Button title='Login Now' onPress={loginStateChange} />
         </View>
       )
     }
@@ -145,7 +173,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#d8ecac'
+    backgroundColor: '#BEA9DF'
   },
   input: {
     height: 40,
@@ -154,4 +182,11 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     borderRadius: 10,
   },
+  notation: {
+    textAlign: 'center',
+    textDecorationLine: 'underline'
+  },
+  title: {
+
+  }
 })
