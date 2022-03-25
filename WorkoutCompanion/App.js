@@ -13,7 +13,7 @@ import Profile from './components/profile';
 export default function App() {
   useEffect(() => {
     readToken()
-  }, [token])
+  }, [token, index])
 
   const STORAGE_TOKEN = '@token'
 
@@ -59,6 +59,19 @@ export default function App() {
       console.log('Not Logged In')
     }
   }
+
+  const logout = async () => {
+    let response = await fetch('https://workoutapi20220309144340.azurewebsites.net/api/auth/Logout', {
+    method: 'POST',
+    })
+    let result = response.json()
+
+    if(response.status == 200){
+        console.log("Logged Out")
+        await AsyncStorage.setItem(STORAGE_TOKEN, null)
+        setToken(null)
+    }
+}
 
   const renderScene = BottomNavigation.SceneMap({
     home: Home,
@@ -159,11 +172,15 @@ export default function App() {
   }
   else{
     return (
+      <>
+      <Button title="Logout" onPress={() => logout()} />
+
       <BottomNavigation
         navigationState={{index, routes}}
         onIndexChange={setIndex}
         renderScene={renderScene}
       />  
+      </>
     )
   }
 }

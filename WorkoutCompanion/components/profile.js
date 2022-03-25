@@ -5,6 +5,9 @@ import { Appbar } from 'react-native-paper';
 
 const Profile = () => {
 
+
+    
+
     return (
         <View style={styles.container}>
         <Text>Profile Page</Text>
