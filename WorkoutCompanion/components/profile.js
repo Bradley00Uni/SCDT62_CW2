@@ -13,7 +13,7 @@ const Profile = () => {
         return (
           <>
           {Alert.alert(
-            "Are you sure?",
+            "Logout Confirmation",
             "Are you sure you want to Logout?",
             [
                 {text: "Yes", onPress: () => {logout()}}, {text: "No", onPress: () => {setIndex(0)}}

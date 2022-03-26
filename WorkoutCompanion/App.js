@@ -17,7 +17,7 @@ export default function App() {
   const STORAGE_TOKEN = '@token'
 
   const [token, setToken] = useState(null)
-  const [loginState, setLoginState] = useState(false)
+  const [loginState, setLoginState] = useState(true)
   const [returned, setReturned] = useState('')
 
   const [firstName, setFirstName] = useState('')
@@ -156,28 +156,45 @@ export default function App() {
     if(loginState){
       return (
         <View style={styles.container}>
-          <Text>Login</Text>
+          <MaterialCommunityIcons name='weight-lifter' size={100} />
+          <Text style={styles.mainTitle}>WorkoutCompanion</Text>
+
+          <Text style={styles.title}>Login</Text>
           <TextInput style={styles.input} placeholder='Email' onChangeText={(email) => setEmail(email)} />
           <TextInput style={styles.input} secureTextEntry={true} placeholder='Password' onChangeText={(password) => setPassword(password)} />
-          <Button title='Login' onPress={(email) => sendLogin(email)} />
 
-          <Text style={styles.notation}>Not Already a Member?</Text>
-          <Button title='Register Now' onPress={loginStateChange} />
+          <View style={styles.inputButton}>
+            <Button title='Login' color={'#28b44c'} onPress={(email) => sendLogin(email)} />
+          </View>
+
+          <Text style={styles.notation}>Not Signed Up?</Text>
+
+          <View style={styles.secondaryButton}>
+            <Button title='Register Now' color={'#f8ac4c'} onPress={loginStateChange} />
+          </View>
         </View>
       )
     }
     else{
       return (
         <View style={styles.container}>
-          <Text>Register</Text>
+          <MaterialCommunityIcons name='weight-lifter' size={100} />
+          <Text style={styles.mainTitle}>WorkoutCompanion</Text>
+
+          <Text style={styles.title}>Register</Text>
           <TextInput style={styles.input} placeholder='Email' onChangeText={(email) => setEmail(email)} />
           <TextInput style={styles.input} secureTextEntry={true} placeholder='Password' onChangeText={(password) => setPassword(password)} />
           <TextInput style={styles.input} placeholder='Name' onChangeText={(firstName) => setFirstName(firstName)} />
           <TextInput style={styles.input} placeholder='Surname' onChangeText={(lastName) => setLastName(lastName)} />
-          <Button title='Register' onPress={(email) => sendRegister(email)} />
+          <View style={styles.inputButton}>
+            <Button title='Register' color={'#28b44c'} onPress={(email) => sendRegister(email)} />
+          </View>
 
           <Text style={styles.notation}>Already a Member?</Text>
-          <Button title='Login Now' onPress={loginStateChange} />
+
+          <View style={styles.secondaryButton}>
+            <Button title='Login Now' color={'#f8ac4c'} onPress={loginStateChange} />
+          </View>
         </View>
       )
     }
@@ -201,17 +218,40 @@ const styles = StyleSheet.create({
     backgroundColor: '#BEA9DF'
   },
   input: {
-    height: 40,
+    height: 50,
     backgroundColor: 'white',
+    marginLeft: 40,
+    marginRight: 40,
     marginTop: 15,
+    marginBottom: 15,
     textAlign: 'center',
-    borderRadius: 10,
+    borderColor: '#47504f', 
+    borderWidth: 2, 
+    borderRadius: 15,
+    width: 300,
+  },
+  inputButton: {
+    width: 280,
+    marginBottom: 20
   },
   notation: {
     textAlign: 'center',
-    textDecorationLine: 'underline'
+    textDecorationLine: 'underline',
+    fontSize: 18,
   },
   title: {
-
-  }
+    fontSize: 30,
+    textAlign: 'center'
+  },
+  mainTitle: {
+    fontSize: 40,
+    textAlign: 'center',
+    marginBottom: 80,
+    marginTop: 10,
+    fontWeight: 'bold'
+  },
+  secondaryButton: {
+    width: 130,
+    marginTop: 10
+  },
 })
