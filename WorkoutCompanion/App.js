@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { View, StyleSheet, Container, Button, Text, TextInput } from 'react-native';
+import { View, StyleSheet, Container, Button, Text, TextInput, Alert } from 'react-native';
 import { BottomNavigation } from 'react-native-paper';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import RNRestart from 'react-native-restart'
 
 import Activities from './components/activities';
 import Workouts from './components/workouts';
@@ -49,7 +48,6 @@ export default function App() {
   const readToken = async () => {
     try {
       const asyncToken = await AsyncStorage.getItem(STORAGE_TOKEN)
-      console.log(AsyncStorage)
   
       if(asyncToken !== null){
         setToken(asyncToken)
@@ -58,6 +56,20 @@ export default function App() {
     catch (e){
       console.log('Not Logged In')
     }
+  }
+
+  const logoutConfirm = () => {
+    return (
+      <>
+      {Alert.alert(
+        "Are you sure?",
+        "Are you sure you want to Logout?",
+        [
+            {text: "Yes", onPress: () => {logout()}}, {text: "No", onPress: () => {setIndex(0)}}
+        ]
+      )}
+      </>
+    )
   }
 
   const logout = async () => {
@@ -172,15 +184,11 @@ export default function App() {
   }
   else{
     return (
-      <>
-      <Button title="Logout" onPress={() => logout()} />
-
       <BottomNavigation
         navigationState={{index, routes}}
         onIndexChange={setIndex}
         renderScene={renderScene}
       />  
-      </>
     )
   }
 }
