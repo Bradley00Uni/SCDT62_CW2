@@ -29,7 +29,8 @@ namespace WorkoutAPI.Data
                 ID = 69,
                 Name = "Placeholder",
                 Description = "This Activity is for Testing",
-                Type = "Test"
+                Type = "Test",
+                UserID = "HELLOWORLD"
             };
 
             builder.Entity<ActivityModel>().HasData(activity);

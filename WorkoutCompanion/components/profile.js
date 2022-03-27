@@ -7,7 +7,17 @@ import {Restart} from 'fiction-expo-restart';
 
 const Profile = () => {
 
-    const STORAGE_TOKEN = '@token'
+  const [name, setName] = useState('')
+  const [id, setID] = useState('')
+
+  const STORAGE_TOKEN = '@token'
+  const STORAGE_NAME = '@name'
+
+  useEffect(async () => {
+    const getName = await AsyncStorage.getItem(STORAGE_NAME)
+    setName(getName)
+
+  }, [])
 
     const logoutConfirm = () => {
         return (
@@ -40,7 +50,7 @@ const Profile = () => {
 
     return (
         <View style={styles.container}>
-        <Text>Profile Page</Text>
+        <Text>{name}'s Profile</Text>
         <Button title='Logout' onPress={() => logoutConfirm()} />
         </View>
     )

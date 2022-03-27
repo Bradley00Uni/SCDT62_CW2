@@ -23,10 +23,10 @@ namespace WorkoutAPI.Controllers
         }
 
         // GET: api/Produc
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<ActivityModel>>> GetActivities()
+        [HttpGet("user/{id}")]
+        public async Task<ActionResult<IEnumerable<ActivityModel>>> GetActivities(string id)
         {
-            return await _context.Activities.ToListAsync();
+            return await _context.Activities.Where(u => u.UserID == id).ToListAsync();
         }
 
         // GET: api/Produc/5

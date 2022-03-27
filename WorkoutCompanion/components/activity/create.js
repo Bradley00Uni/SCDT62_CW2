@@ -2,10 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { Text, TextInput, View, StyleSheet, Button, Alert } from 'react-native';
 import FlashMessage, { showMessage, hideMessage } from "react-native-flash-message";
 
-const Create = () => {
+const Create = (params) => {
     const [name, setName] = useState('');
     const [desc, setDesc] = useState('');
     const [type, setType] = useState('');
+    const [user, setUser] = useState(params.params)
 
     const data = [name, desc, type];
     const [returned, setReturned] = useState('')
@@ -15,8 +16,10 @@ const Create = () => {
         let data = {
             "name": name,
             "description": desc,
-            "type": type
+            "type": type,
+            "userid" : user
        }
+       console.log(user)
 
         const response = await fetch('https://workoutapi20220309144340.azurewebsites.net/api/activities', {
             method: 'POST',

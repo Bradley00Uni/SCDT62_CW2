@@ -18,5 +18,8 @@ namespace WorkoutAPI.Models
 
         [Required]
         public double? Duration { get; set; }
+
+        [Required]
+        public string? UserID { get; set; }
     }
 }

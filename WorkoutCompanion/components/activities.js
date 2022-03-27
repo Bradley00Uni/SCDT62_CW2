@@ -4,21 +4,28 @@ import { Card, Overlay, Header } from 'react-native-elements';
 import {FontAwesome} from '@expo/vector-icons';
 import FlashMessage, { showMessage, hideMessage } from "react-native-flash-message";
 import { Appbar } from 'react-native-paper';
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 import Create from './activity/create';
 import Edit from './activity/edit';
 
 const Activities = () => {
+    const STORAGE_USER = '@user'
+
     const [loading, setLoading] = useState(true);
     const [activities, setActivities] = useState(null);
     const [createVisible, setCreateVisible] = useState(null);
     const [editVisible, setEditVisible] = useState(null);
     const [returned, setReturned] = useState('')
 
+    const [user, setUser] = useState(null)
+
     const [toEdit, setToEdit] = useState(null)
     
     useEffect(() => {
-        return fetch('https://workoutapi20220309144340.azurewebsites.net/api/activities').then( (response) => response.json()).then( (responseJson) => {
+        getUser()
+        console.log(user)
+        return fetch(`https://workoutapi20220309144340.azurewebsites.net/api/activities/user/${user}`).then( (response) => response.json()).then( (responseJson) => {
             setActivities(responseJson)
             setLoading(false)
 
@@ -26,6 +33,11 @@ const Activities = () => {
         .catch((error) => {console.log(error)})
 
     },)
+
+    const getUser = async () => {
+        const id = await AsyncStorage.getItem(STORAGE_USER)
+        setUser(id)
+    }
 
     if (loading){
         return (
@@ -108,7 +120,7 @@ const Activities = () => {
                    <Appbar.Action icon="plus" onPress={toggleCreate} accessibiltyLevel />
                    <Appbar.Content title="Activities" subtitle={'Activities are used when creating a Workout'} />               
                </Appbar.Header>
-                <Overlay isVisible={createVisible} onBackdropPress={toggleCreate}><Create /></Overlay>
+                <Overlay isVisible={createVisible} onBackdropPress={toggleCreate}><Create params={user} /></Overlay>
                 <Overlay isVisible={editVisible} onBackdropPress={toggleEdit} ><Edit activ={toEdit} /></Overlay>
                 <ScrollView style={styles.scrolling}>
                     {acts}

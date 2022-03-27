@@ -20,5 +20,8 @@ namespace WorkoutAPI.Models
         [MaxLength(50)]
         [Required]
         public string? Type { get; set; }
+
+        [Required]
+        public string? UserID { get; set; }
     }
 }

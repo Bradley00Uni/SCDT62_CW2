@@ -15,6 +15,8 @@ export default function App() {
   }, [token, index])
 
   const STORAGE_TOKEN = '@token'
+  const STORAGE_USER = '@user'
+  const STORAGE_NAME = '@name'
 
   const [token, setToken] = useState(null)
   const [loginState, setLoginState] = useState(true)
@@ -33,11 +35,17 @@ export default function App() {
     {key: 'profile', title: 'Profile', icon: 'account', color: '#BEA9DF'},
   ]);
 
-  const saveToken = async (t) => {
+  const saveToken = async (result) => {
     try {
-      await AsyncStorage.setItem(STORAGE_TOKEN, t)
+      await AsyncStorage.setItem(STORAGE_TOKEN, result.token)
       console.log('Token Set Successfully')
-      setToken(t)
+
+      await AsyncStorage.setItem(STORAGE_USER, result.id)
+      console.log('ID set Successfully')
+
+      await AsyncStorage.setItem(STORAGE_NAME, result.firstName)
+
+      setToken(result.token)
       return('Login Successfully Validated')
     }
     catch (e){
@@ -57,33 +65,6 @@ export default function App() {
       console.log('Not Logged In')
     }
   }
-
-  const logoutConfirm = () => {
-    return (
-      <>
-      {Alert.alert(
-        "Are you sure?",
-        "Are you sure you want to Logout?",
-        [
-            {text: "Yes", onPress: () => {logout()}}, {text: "No", onPress: () => {setIndex(0)}}
-        ]
-      )}
-      </>
-    )
-  }
-
-  const logout = async () => {
-    let response = await fetch('https://workoutapi20220309144340.azurewebsites.net/api/auth/Logout', {
-    method: 'POST',
-    })
-    let result = response.json()
-
-    if(response.status == 200){
-        console.log("Logged Out")
-        await AsyncStorage.setItem(STORAGE_TOKEN, null)
-        setToken(null)
-    }
-}
 
   const renderScene = BottomNavigation.SceneMap({
     home: Home,
@@ -116,7 +97,8 @@ export default function App() {
     let result = await response.json()
 
     if(response.status == 200){
-      saveToken(result.token)
+      console.log(result)
+      saveToken(result)
     }
     else{
         var errors = Object.values(result.errors);
@@ -156,7 +138,7 @@ export default function App() {
     if(loginState){
       return (
         <View style={styles.container}>
-          <MaterialCommunityIcons name='weight-lifter' size={100} />
+          <MaterialCommunityIcons name='weight-lifter' size={100} color="black" />
           <Text style={styles.mainTitle}>WorkoutCompanion</Text>
 
           <Text style={styles.title}>Login</Text>
@@ -178,7 +160,7 @@ export default function App() {
     else{
       return (
         <View style={styles.container}>
-          <MaterialCommunityIcons name='weight-lifter' size={100} />
+          <MaterialCommunityIcons name='weight-lifter' size={100} color="black" />
           <Text style={styles.mainTitle}>WorkoutCompanion</Text>
 
           <Text style={styles.title}>Register</Text>
