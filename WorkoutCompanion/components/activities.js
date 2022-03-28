@@ -148,7 +148,7 @@ const styles = StyleSheet.create({
       flex: 1,
       justifyContent: 'center',
       alignItems: 'center',
-      backgroundColor: '#f8c4c4'
+      backgroundColor: '#ffacac'
       //padding: 8,
     },
     header: {
@@ -176,13 +176,11 @@ const styles = StyleSheet.create({
         borderRadius: 10,
       },
     item: {
-        backgroundColor: 'green',
         flexDirection: 'row',
         borderRadius: 80
     },
     activity_header: {
         flexDirection: 'row', 
-        backgroundColor: 'red', 
         justifyContent: 'center',
         padding: 8,
         alignItems: 'center',
@@ -192,7 +190,7 @@ const styles = StyleSheet.create({
         width: Dimensions.get('window').width,
     },
     itemContainer: {
-        backgroundColor: '#fffcf4', 
+        backgroundColor: '#ffe4e4', 
         borderColor: '#47504f', 
         borderWidth: 2, 
         borderRadius: 16,
