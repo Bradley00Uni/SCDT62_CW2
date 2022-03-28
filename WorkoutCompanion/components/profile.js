@@ -10,20 +10,22 @@ const Profile = () => {
   const [loading, setLoading] = useState(true)
 
   const [name, setName] = useState('')
-  const [id, setID] = useState('')
+  const [user, setUser] = useState('')
 
-  const [latestWorkout, setLatestWorkout] = useState(null)
+  const [workouts, setWorkouts] = useState(null)
+  const [activities, setActivities] = useState(null)
 
   const STORAGE_TOKEN = '@token'
   const STORAGE_NAME = '@name'
+  const STORAGE_USER = '@user'
 
-  useEffect(async () => {
-    const getName = await AsyncStorage.getItem(STORAGE_NAME)
-    setName(getName)
-
+  useEffect(() => {
+    getWorkouts()
+    getActivities()
+    setLoading(false)
   }, [])
 
-    const logoutConfirm = () => {
+  const logoutConfirm = () => {
         return (
           <>
           {Alert.alert(
@@ -35,9 +37,9 @@ const Profile = () => {
           )}
           </>
         )
-      }
+  }
     
-    const logout = async () => {
+  const logout = async () => {
         let response = await fetch('https://workoutapi20220309144340.azurewebsites.net/api/auth/Logout', {
         method: 'POST',
         })
@@ -48,26 +50,100 @@ const Profile = () => {
             await AsyncStorage.removeItem(STORAGE_TOKEN)
             Restart()
         }
+  }
+
+  const getUser = async () => {
+    const id = await AsyncStorage.getItem(STORAGE_USER)
+    setUser(id)
+
+    const getName = await AsyncStorage.getItem(STORAGE_NAME)
+    setName(getName)
+  }
+
+    const getActivities = async () => {
+      return fetch(`https://workoutapi20220309144340.azurewebsites.net/api/activities/user/${user}`).then( (response) => response.json()).then( (responseJson) => {
+            setActivities(responseJson)
+
+        })
+        .catch((error) => {console.log(error)})
     }
 
-    const getWorkout = async () => {
-      
+    const getWorkouts = async () => {
+      getUser()
+      return fetch(`https://workoutapi20220309144340.azurewebsites.net/api/workouts/user/${user}`).then( (response) => response.json()).then( (responseJson) => {
+            setWorkouts(responseJson)
+
+        })
+        .catch((error) => {console.log(error)})
     }
 
-    
-    let nameDisplay = ("Welcome Back " + name)
+    const ActivityInformation = () => {
+      if(activities != null){
+        let activityCount = activities.length
+        //Add Update Buttons to manually call functions for Activites and Workouts
+        return (
+          <View>
+            <Text>You currently have {activityCount} activities saved, the most common type is: ##. You can add more in the 'Activites' tab of the app</Text>
+          </View>
+        )
+      }
+      else{
+        return (
+          <View></View>
+        )
+      }
+    }
 
-    return (
-        <View style={styles.container}>
-          <Appbar.Header style={styles.profile_header}>
-            <Appbar.Content title="WorkoutCompanion" />
-            <Appbar.Action icon="exit-to-app" accessibiltyLevel onPress={() => logoutConfirm()} />
-          </Appbar.Header>
-          <ScrollView style={styles.scrolling} contentContainerStyle={styles.scrollingContainer}>
-            <Text style={styles.title}>{nameDisplay}</Text>
-          </ScrollView>
+    const WorkoutInformation = () => {
+     if (workouts != null){
+       let workoutCount = workouts.length
+       return (
+         <View>
+           <Text>You currently have {workoutCount} workouts recorded, (Total Duration) (Average Duration) (Compare Against a Statistic) (Average Number of Activities) (Visit the Tab)</Text>
+         </View>
+       )
+     }
+     else{
+       return (
+         <View>
+           <Text></Text>
+         </View>
+       )
+     }
+    }
+
+    const NearbyLocations = () => {
+      return (
+        <View>
+           <Text>Attempt to Add Google Maps Plugin or Link</Text>
         </View>
-    )
+      )
+    }
+    
+    if(loading){
+      return (
+        <View></View>
+      )
+    }
+    else{
+      let nameDisplay = ("Welcome Back, " + name)
+      return (
+          <View style={styles.container}>
+            <Appbar.Header style={styles.profile_header}>
+              <Appbar.Content title="WorkoutCompanion" />
+              <Appbar.Action icon="exit-to-app" accessibiltyLevel onPress={() => logoutConfirm()} />
+            </Appbar.Header>
+            <ScrollView style={styles.scrolling} contentContainerStyle={styles.scrollingContainer}>
+              <Text style={styles.title}>{nameDisplay}</Text>
+
+              <ActivityInformation />
+              <WorkoutInformation />
+              <NearbyLocations />
+
+            </ScrollView>
+          </View>
+      )
+    }
 }
 
 const styles = StyleSheet.create({
@@ -93,8 +169,9 @@ const styles = StyleSheet.create({
       alignItems: 'center'
     },
     title: {
-      fontSize: 30,
-      textAlign: 'center'
+      fontSize: 35,
+      textAlign: 'center',
+      marginTop: 30,
     },
 })
 
