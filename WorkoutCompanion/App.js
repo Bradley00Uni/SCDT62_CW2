@@ -74,8 +74,6 @@ export default function App() {
     setLoginState(!loginState)
     setFirstName('')
     setLastName('')
-    setEmail('')
-    setPassword('')
   }
 
   const sendLogin = async () => {

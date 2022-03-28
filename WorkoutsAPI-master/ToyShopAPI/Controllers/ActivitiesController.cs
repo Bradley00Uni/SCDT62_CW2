@@ -35,6 +35,37 @@ namespace WorkoutAPI.Controllers
             return await _context.Activities.Where(u => u.UserID == id).ToListAsync();
         }
 
+        [HttpGet("user/stats/{id}")]
+        public async Task<ActionResult<ActivityStatisticModel>> GetActivityStatistics(string id)
+        {
+            var arrayList =  await _context.Activities.Where(u => u.UserID == id).ToListAsync();
+            var typeList = new List<String>();
+
+            if(arrayList != null)
+            {
+                foreach (var activity in arrayList)
+                {
+                    typeList.Add(activity.Type);
+                }
+
+                var typeGroup = typeList.GroupBy(u => u);
+
+                string commonType = "";
+                int commonCount = 0;
+
+                foreach (var g in typeGroup)
+                {
+                    if (g.Count() > commonCount) { commonCount = g.Count(); commonType = g.Key; }
+                }
+
+                return new ActivityStatisticModel() { CommonType = commonType, TypeCount = commonCount, ActivityCount = arrayList.Count() };
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
+
         // GET: api/Produc/5
         [HttpGet("{id}")]
         public async Task<ActionResult<ActivityModel>> GetActivityModel(int id)

@@ -21,9 +21,7 @@ const Profile = () => {
 
   useEffect(() => {
     getWorkouts()
-    getActivities()
-    setLoading(false)
-  }, [])
+  }, [loading])
 
   const logoutConfirm = () => {
         return (
@@ -61,8 +59,10 @@ const Profile = () => {
   }
 
     const getActivities = async () => {
-      return fetch(`https://workoutapi20220309144340.azurewebsites.net/api/activities/user/${user}`).then( (response) => response.json()).then( (responseJson) => {
+      return fetch(`https://workoutapi20220309144340.azurewebsites.net/api/activities/user/stats/${user}`).then( (response) => response.json()).then( (responseJson) => {
             setActivities(responseJson)
+            console.log(activities)
+            setLoading(false)
 
         })
         .catch((error) => {console.log(error)})
@@ -72,6 +72,7 @@ const Profile = () => {
       getUser()
       return fetch(`https://workoutapi20220309144340.azurewebsites.net/api/workouts/user/${user}`).then( (response) => response.json()).then( (responseJson) => {
             setWorkouts(responseJson)
+            getActivities()
 
         })
         .catch((error) => {console.log(error)})
@@ -79,11 +80,10 @@ const Profile = () => {
 
     const ActivityInformation = () => {
       if(activities != null){
-        let activityCount = activities.length
         //Add Update Buttons to manually call functions for Activites and Workouts
         return (
           <View>
-            <Text>You currently have {activityCount} activities saved, the most common type is: ##. You can add more in the 'Activites' tab of the app</Text>
+            <Text>You currently have {activities.activityCount} activities saved, the most common type is: {activities.commonType}, which covers {activities.typeCount} of your Activities. You can add more in the 'Activites' tab of the app</Text>
           </View>
         )
       }
