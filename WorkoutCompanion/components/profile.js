@@ -108,7 +108,7 @@ const Profile = () => {
             <Card style={styles.item}  containerStyle={styles.itemContainer}> 
               <Card.Title h4>Activity Recap</Card.Title>
               <Card.Divider color='#47504f' width={2} />
-              <Text>You don't currently have any Activity types stored on this App, you can add some from the Actvity tab</Text>
+              <Text style={{fontSize: 18, textAlign: 'center'}}>You don't currently have any Activity types stored on this App, you can add some from the Actvity tab</Text>
             </Card>
           )
         }

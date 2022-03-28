@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Text, TextInput, View, StyleSheet, Button, Alert } from 'react-native';
+import { Text, TextInput, View, StyleSheet, Button, Alert, ScrollView, Dimensions } from 'react-native';
 import FlashMessage, { showMessage, hideMessage } from "react-native-flash-message";
 
 const Create = (params) => {
@@ -19,7 +19,6 @@ const Create = (params) => {
             "type": type,
             "userid" : user
        }
-       console.log(user)
 
         const response = await fetch('https://workoutapi20220309144340.azurewebsites.net/api/activities', {
             method: 'POST',
@@ -53,12 +52,15 @@ const Create = (params) => {
     };
 
     return (
-        <View style={styles.form}>
+        <View style={styles.container}>
+            <Text style={styles.title}>Create a New Activity</Text>
             <TextInput style={styles.input} placeholder="Activity Name" onChangeText={(name) => setName(name)} />
             <TextInput style={styles.input} placeholder="Description" onChangeText={(desc) => setDesc(desc)} />
             <TextInput style={styles.input} placeholder="Type" onChangeText={(type) => setType(type)} />
 
-           <Button title="Create" style={styles.input} onPress={() => sendData(name)} />
+            <View style={styles.inputButton}>
+                <Button title="Create" style={styles.input} color={'#18a4bc'} onPress={() => sendData(name)} />
+           </View>
 
            <FlashMessage position="top" />
         </View>
@@ -67,17 +69,31 @@ const Create = (params) => {
 
 const styles = StyleSheet.create({
     input: {
-      height: 40,
-      backgroundColor: 'white',
-      marginLeft: 40,
-      marginRight: 40,
-      marginTop: 30,
-      textAlign: 'center',
-      borderRadius: 10,
+        height: 50,
+        backgroundColor: 'white',
+        marginLeft: 40,
+        marginRight: 40,
+        marginTop: 15,
+        marginBottom: 15,
+        textAlign: 'center',
+        borderColor: '#47504f', 
+        borderWidth: 2, 
+        borderRadius: 15,
+        width: 300,
     },
-    form: {
-
-    }
+    inputButton: {
+        width: 280,
+        marginBottom: 20,
+        marginTop: 5
+    },
+    title: {
+        fontSize: 30,
+        textAlign: 'center',
+    },
+    container: {
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
   });
 
   export default Create;

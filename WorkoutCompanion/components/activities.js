@@ -49,15 +49,15 @@ const Activities = () => {
             let acts = activities.map((val, key) => {
                     return(
                         <View key={key}> 
-                            <Card key={key} style={styles.item} containerStyle={{backgroundColor: '#daeaf6'}}>
-                                <Card.Title h5>{val.name} ({val.type})</Card.Title>
+                            <Card key={key} style={styles.item} containerStyle={styles.itemContainer}>
+                                <Card.Title h4>{val.name} ({val.type})</Card.Title>
                                 <Card.Divider />
                                 <View style={{textAlign: 'center', justifyContent: 'flex-start'}}>
-                                    <Text>{val.description}</Text>
+                                    <Text style={{fontSize: 16}}>Description: {val.description}</Text>
                                 </View>     
-                                <View style={{flexDirection: 'row', justifyContent: 'flex-end'}}>
-                                    <FontAwesome.Button name='pencil' style={{justifyContent: 'flex-start', backgroundColor: 'orange'}} onPress={() => {setToEdit(val); setEditVisible(true);}} />
-                                    <FontAwesome.Button name='trash-o' style={{justifyContent: 'flex-end', backgroundColor: '#ff4034'}} onPress={() => deleteConfirm(val)} />
+                                <View style={{justifyContent: 'space-evenly', flexDirection: 'row', marginTop: 20}}>
+                                    <Button title="Edit Activity" color={'orange'} onPress={() => {setToEdit(val); setEditVisible(true);}} />
+                                    <Button title="Delete Activity" color={'#ff4034'} onPress={() => deleteConfirm(val)} />
                                 </View>
                             </Card>
                         </View>
@@ -119,8 +119,18 @@ const Activities = () => {
                    <Appbar.Action icon="plus" onPress={toggleCreate} accessibiltyLevel />
                    <Appbar.Content title="Activities" subtitle={'Activities are used when creating a Workout'} />               
                </Appbar.Header>
-                <Overlay isVisible={createVisible} onBackdropPress={toggleCreate}><Create params={user} /></Overlay>
-                <Overlay isVisible={editVisible} onBackdropPress={toggleEdit} ><Edit activ={toEdit} /></Overlay>
+                <Overlay isVisible={createVisible} onBackdropPress={toggleCreate} overlayStyle={{backgroundColor: '#f8c4c4', borderColor: '#47504f', borderWidth: 2, borderRadius: 15,}}>
+                    <Create params={user} />
+                    <View style={{marginTop: 30}}>
+                        <Button color={'#FF6961'} onPress={() => toggleCreate()} title={"Go Back"} />
+                    </View>
+                </Overlay>
+                <Overlay isVisible={editVisible} onBackdropPress={toggleEdit} overlayStyle={{backgroundColor: '#f8c4c4', borderColor: '#47504f', borderWidth: 2, borderRadius: 15,}} >
+                    <Edit activ={toEdit} />
+                    <View style={{marginTop: 30}}>
+                        <Button color={'#FF6961'} onPress={() => toggleEdit()} title={"Go Back"} />
+                    </View>
+                </Overlay>
                 <ScrollView style={styles.scrolling}>
                     {acts}
                 </ScrollView>
@@ -138,6 +148,7 @@ const styles = StyleSheet.create({
       flex: 1,
       justifyContent: 'center',
       alignItems: 'center',
+      backgroundColor: '#f8c4c4'
       //padding: 8,
     },
     header: {
@@ -179,6 +190,12 @@ const styles = StyleSheet.create({
     },
     scrolling: {
         width: Dimensions.get('window').width,
+    },
+    itemContainer: {
+        backgroundColor: '#fffcf4', 
+        borderColor: '#47504f', 
+        borderWidth: 2, 
+        borderRadius: 16,
     },
   });
 

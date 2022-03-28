@@ -51,12 +51,15 @@ const Edit = (activ) => {
 
     if(activ != null){
         return (
-            <View>
+            <View style={styles.container}>
+                <Text style={styles.title}>Edit This Activity</Text>
                 <TextInput style={styles.input} defaultValue={activ.activ.name} onChangeText={(name) => setName(name)} />
                 <TextInput style={styles.input} defaultValue={activ.activ.description} onChangeText={(desc) => setDesc(desc)} />
                 <TextInput style={styles.input} defaultValue={activ.activ.type} onChangeText={(type) => setType(type)} />
 
-            <Button title="Save Changes" style={styles.input} onPress={() => sendData()} />
+                <View style={styles.inputButton}>
+                    <Button title="Save Changes" color={'orange'} style={styles.input} onPress={() => sendData()} />
+                </View>
 
             <FlashMessage position="top" />
             </View>
@@ -72,17 +75,31 @@ const Edit = (activ) => {
 
 const styles = StyleSheet.create({
     input: {
-      height: 40,
-      backgroundColor: 'white',
-      marginLeft: 40,
-      marginRight: 40,
-      marginTop: 30,
-      textAlign: 'center',
-      borderRadius: 10,
+        height: 50,
+        backgroundColor: 'white',
+        marginLeft: 40,
+        marginRight: 40,
+        marginTop: 15,
+        marginBottom: 15,
+        textAlign: 'center',
+        borderColor: '#47504f', 
+        borderWidth: 2, 
+        borderRadius: 15,
+        width: 300,
     },
-    form: {
-
-    }
+    inputButton: {
+        width: 280,
+        marginBottom: 20,
+        marginTop: 5
+    },
+    title: {
+        fontSize: 30,
+        textAlign: 'center',
+    },
+    container: {
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
   });
 
 export default Edit

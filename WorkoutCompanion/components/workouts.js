@@ -201,7 +201,7 @@ const Workouts = () => {
         <View style={styles.container}>
             <Appbar.Header style={styles.workout_header}>
                 <Appbar.Action icon="plus" accessibiltyLevel onPress={() => setDatePicker()} />
-                <Appbar.Content title="Workouts" subtitle={'lorem ipsum'} />
+                <Appbar.Content title="Workouts" />
             </Appbar.Header>
 
             <ScrollView style={styles.scrolling}>
