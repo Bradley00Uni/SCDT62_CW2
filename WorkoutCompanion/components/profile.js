@@ -186,6 +186,7 @@ const Profile = () => {
       return (
           <View style={styles.container}>
             <Appbar.Header style={styles.profile_header}>
+            <Appbar.Action icon="refresh" accessibiltyLevel onPress={() => getWorkouts()} />
               <Appbar.Content title="WorkoutCompanion" />
               <Appbar.Action icon="exit-to-app" accessibiltyLevel onPress={() => logoutConfirm()} />
             </Appbar.Header>
