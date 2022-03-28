@@ -6,7 +6,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 
 import Activities from './components/activities';
 import Workouts from './components/workouts';
-import Home from './components/home'
 import Profile from './components/profile';
 
 export default function App() {
@@ -29,10 +28,9 @@ export default function App() {
 
   const [index, setIndex] = useState(0);
   const [routes] = useState([
-    {key: 'home', title: 'Home', icon: 'home', color: '#ff964f'},
-    {key: 'activities', title: 'Activities', icon: 'walk', color: '#f06c64'},
+    {key: 'home', title: 'Home', icon: 'home', color: '#BEA9DF'},
     {key: 'workouts', title: 'Workouts', icon: 'routes-clock', color: '#ACDEAA'},
-    {key: 'profile', title: 'Profile', icon: 'account', color: '#BEA9DF'},
+    {key: 'activities', title: 'Activities', icon: 'walk', color: '#f06c64'},
   ]);
 
   const saveToken = async (result) => {
@@ -67,10 +65,9 @@ export default function App() {
   }
 
   const renderScene = BottomNavigation.SceneMap({
-    home: Home,
+    home: Profile,
     activities: Activities,
     workouts: Workouts,
-    profile: Profile
   });
 
   const loginStateChange = () => {
@@ -187,6 +184,7 @@ export default function App() {
         navigationState={{index, routes}}
         onIndexChange={setIndex}
         renderScene={renderScene}
+        shifting={true}
       />  
     )
   }
