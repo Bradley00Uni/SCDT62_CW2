@@ -61,6 +61,59 @@ namespace WorkoutAPI.Controllers
             return Workouts;
         }
 
+        [HttpGet("user/stats/{id}")]
+        public async Task<ActionResult<WorkoutStatisticModel>> GetWorkoutStatistics(string id)
+        {
+            var Workouts = new List<WorkoutViewModel>();
+            var ExerciseModels = new List<ExerciseModel>();
+            var WorkoutModels = await _context.Workouts.Where(u => u.UserID == id).ToListAsync();
+
+            if (WorkoutModels == null) { return NotFound(); }
+
+            foreach (var model in WorkoutModels)
+            {
+                var workoutExercises = await _context.Exercises.Include("Activity").Where(x => x.WorkoutID == model.ID).ToListAsync();
+
+                Workouts.Add(new WorkoutViewModel() { Workout = model, Exercises = workoutExercises });
+            }
+            var RecentWorkouts = Workouts.Where(x => (DateTime.Now - x.Workout.WorkoutCreated).TotalDays < 30);
+
+            var workoutCount = RecentWorkouts.Count();
+
+            var totalDuration = 0;
+            var totalActivities = 0;
+
+            foreach (var workout in RecentWorkouts)
+            {
+                foreach(var exercise in workout.Exercises)
+                {
+                    totalDuration = (int)(totalDuration + exercise.Duration);
+                }
+                totalActivities = totalActivities + workout.Exercises.Count();
+            }
+
+            var averageDuration = 0;
+            try
+            {
+                averageDuration = totalDuration / totalActivities;
+            }
+            catch(Exception ex)
+            {
+                averageDuration = 0;
+            }
+            var averageActvities = 0;
+            try
+            {
+                averageActvities = totalActivities / RecentWorkouts.Count();
+            }
+            catch (Exception ex)
+            {
+                averageActvities= 0;
+            }
+
+            return new WorkoutStatisticModel() { WorkoutCount = workoutCount, TotalDuration = totalDuration, AverageDuration = averageDuration, TotalActivities = totalActivities, AverageActivities = averageActvities };
+        }
+
         // GET: api/Produc/5
         [HttpGet("{id}")]
         public async Task<ActionResult<WorkoutViewModel>> GetWorkoutModel(int id)

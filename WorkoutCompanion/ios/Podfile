@@ -26,6 +26,8 @@ target 'WorkoutCompanion' do
 
   pod 'react-native-restart', :path => '../node_modules/react-native-restart'
 
+  pod 'ReactNativeART', :path => '../node_modules/@react-native-community/art'
+
   post_install do |installer|
     react_native_post_install(installer)
 
