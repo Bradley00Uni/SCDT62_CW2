@@ -22,6 +22,12 @@ namespace WorkoutAPI.Controllers
             _context = context;
         }
 
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<ActivityModel>>> GetAllActivities()
+        {
+            return await _context.Activities.ToListAsync();
+        }
+
         // GET: api/Produc
         [HttpGet("user/{id}")]
         public async Task<ActionResult<IEnumerable<ActivityModel>>> GetActivities(string id)

@@ -18,9 +18,9 @@ namespace WorkoutAPI.Controllers
         }
         
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<ExerciseModel>>> GetExercises(string user)
+        public async Task<ActionResult<IEnumerable<ExerciseModel>>> GetExercises()
         {
-            return await _context.Exercises.Include("Activity").Where(u => u.UserID == user).ToListAsync();
+            return await _context.Exercises.Include("Activity").ToListAsync();
         }
 
         [HttpGet("{id}")]

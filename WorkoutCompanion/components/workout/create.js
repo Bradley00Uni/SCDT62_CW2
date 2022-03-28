@@ -11,6 +11,8 @@ const Create = (current) => {
     const [exercises, setExercises] = useState(current.current.exercises)
     const [activities, setActivities] = useState(null)
 
+    const [user, setUser] = useState(current.user)
+
     const [loading, setLoading] = useState(true)
     const [returned, setReturned] = useState('')
 
@@ -18,7 +20,7 @@ const Create = (current) => {
 
 
     useEffect(() => {
-        return fetch('https://workoutapi20220309144340.azurewebsites.net/api/activities').then( (r) => r.json()).then( (rj) => {
+        return fetch(`https://workoutapi20220309144340.azurewebsites.net/api/activities/user/${user}`).then( (r) => r.json()).then( (rj) => {
             setActivities(rj)
             setLoading(false)
 

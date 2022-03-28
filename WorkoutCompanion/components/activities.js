@@ -24,7 +24,6 @@ const Activities = () => {
     
     useEffect(() => {
         getUser()
-        console.log(user)
         return fetch(`https://workoutapi20220309144340.azurewebsites.net/api/activities/user/${user}`).then( (response) => response.json()).then( (responseJson) => {
             setActivities(responseJson)
             setLoading(false)

@@ -5,11 +5,13 @@ import { Appbar } from 'react-native-paper';
 import FlashMessage, { showMessage, hideMessage } from "react-native-flash-message";
 import {FontAwesome, MaterialCommunityIcons} from '@expo/vector-icons';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 import Details from './workout/details';
 import Create from './workout/create';
 
 const Workouts = () => {
+    const STORAGE_USER = '@user'
     const [workouts, setWorkouts] = useState(null);
 
     const [loading, setLoading] = useState(true)
@@ -19,11 +21,13 @@ const Workouts = () => {
     const [createVisible, setCreateVisible] = useState(false);
 
     const [currentWorkout, setCurrentWorkout] = useState(null);
+    const [user, setUser] = useState(null)
 
     const [datePickerVisible, setDatePickerVisible] = useState(false)
 
     useEffect(() => {
-        return fetch('https://workoutapi20220309144340.azurewebsites.net/api/workouts').then( (response) => response.json()).then( (responseJson) => {
+        getUser()
+        return fetch(`https://workoutapi20220309144340.azurewebsites.net/api/workouts/user/${user}`).then( (response) => response.json()).then( (responseJson) => {
             setWorkouts(responseJson)
             setLoading(false)
 
@@ -31,10 +35,16 @@ const Workouts = () => {
         .catch((error) => {console.log(error)})
     },)
 
+    const getUser = async () => {
+        const id = await AsyncStorage.getItem(STORAGE_USER)
+        setUser(id)
+    }
+
     const setDatePicker =() => {setDatePickerVisible(!datePickerVisible)}
     const sendWorkout = async (d) => {
         let data = {
-            "workoutCreated" : d
+            "workoutCreated" : d,
+            "userID" : user
         }
 
         const response = await fetch('https://workoutapi20220309144340.azurewebsites.net/api/workouts', {
@@ -179,7 +189,13 @@ const Workouts = () => {
            )
        })
 
-    let last = convertDate(workouts[0].workout.workoutCreated)
+    let last;
+    try{
+        last = ("Your last workout was on " +  convertDate(workouts[0].workout.workoutCreated) + ", why not add a new one now?")
+    }
+    catch (e){
+        last = "You don't currently have any workouts, why not add one now?"
+    }
     return (
         
         <View style={styles.container}>
@@ -192,7 +208,7 @@ const Workouts = () => {
                 <Card containerStyle={{backgroundColor: '#b0dcac', borderColor: '#47504f', borderWidth: 2, }}>
                     <Card.Title style={{color: '#47504f'}} h3>Been Busy?</Card.Title>
                     <Card.Divider color='#47504f' />
-                    <Text style={styles.greeting_text}>Your last workout was on {last}, why not add a new one now?</Text>
+                    <Text style={styles.greeting_text}>{last}</Text>
                     <Button title="Create" color={'#28b44c'} onPress={() => setDatePicker()} ></Button>
                 </Card>
                 {works}
@@ -206,7 +222,7 @@ const Workouts = () => {
             </Overlay>
 
             <Overlay isVisible={createVisible} fullScreen overlayStyle={{backgroundColor: '#d8ecac'}} >
-                <Create current={currentWorkout} />
+                <Create current={currentWorkout} user={user} />
                 <View style={{marginTop: 30}}>
                     <Button color={'#FF6961'} onPress={() => setCreateVisible(false)} title={"Go Back"} />
                 </View>

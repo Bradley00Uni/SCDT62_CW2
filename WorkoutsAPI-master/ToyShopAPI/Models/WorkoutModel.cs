@@ -11,5 +11,8 @@ namespace WorkoutAPI.Models
         public int ID { get; set; }
 
         public DateTime WorkoutCreated { get; set; }
+
+        [Required]
+        public string? UserID { get; set; }
     }
 }

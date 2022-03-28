@@ -24,7 +24,7 @@ namespace WorkoutAPI.Controllers
 
         // GET: api/Produc
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<WorkoutViewModel>>> GetWorkouts()
+        public async Task<ActionResult<IEnumerable<WorkoutViewModel>>> GetAllWorkouts()
         {
             var ExerciseModels = new List<ExerciseModel>();
             var Workouts = new List<WorkoutViewModel>();
@@ -34,6 +34,25 @@ namespace WorkoutAPI.Controllers
             if(WorkoutModels == null) { return NotFound(); }
 
             foreach(var model in WorkoutModels)
+            {
+                var workoutExercises = await _context.Exercises.Include("Activity").Where(x => x.WorkoutID == model.ID).ToListAsync();
+
+                Workouts.Add(new WorkoutViewModel() { Workout = model, Exercises = workoutExercises });
+            }
+            return Workouts;
+        }
+
+        [HttpGet("user/{id}")]
+        public async Task<ActionResult<IEnumerable<WorkoutViewModel>>> GetWorkouts(string id)
+        {
+            var ExerciseModels = new List<ExerciseModel>();
+            var Workouts = new List<WorkoutViewModel>();
+
+            var WorkoutModels = await _context.Workouts.Where(u => u.UserID == id).ToListAsync();
+
+            if (WorkoutModels == null) { return NotFound(); }
+
+            foreach (var model in WorkoutModels)
             {
                 var workoutExercises = await _context.Exercises.Include("Activity").Where(x => x.WorkoutID == model.ID).ToListAsync();
 
