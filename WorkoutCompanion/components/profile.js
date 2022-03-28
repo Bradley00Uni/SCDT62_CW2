@@ -4,11 +4,15 @@ import { Card, Overlay } from 'react-native-elements';
 import { Appbar } from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import {Restart} from 'fiction-expo-restart';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 const Profile = () => {
+  const [loading, setLoading] = useState(true)
 
   const [name, setName] = useState('')
   const [id, setID] = useState('')
+
+  const [latestWorkout, setLatestWorkout] = useState(null)
 
   const STORAGE_TOKEN = '@token'
   const STORAGE_NAME = '@name'
@@ -26,7 +30,7 @@ const Profile = () => {
             "Logout Confirmation",
             "Are you sure you want to Logout?",
             [
-                {text: "Yes", onPress: () => {logout()}}, {text: "No", onPress: () => {setIndex(0)}}
+                {text: "Yes", onPress: () => {logout()}}, {text: "No"}
             ]
           )}
           </>
@@ -46,12 +50,22 @@ const Profile = () => {
         }
     }
 
+    const getWorkout = async () => {
+      
+    }
+
     
+    let nameDisplay = ("Welcome Back " + name)
 
     return (
         <View style={styles.container}>
-        <Text>{name}'s Profile</Text>
-        <Button title='Logout' onPress={() => logoutConfirm()} />
+          <Appbar.Header style={styles.profile_header}>
+            <Appbar.Content title="WorkoutCompanion" />
+            <Appbar.Action icon="exit-to-app" accessibiltyLevel onPress={() => logoutConfirm()} />
+          </Appbar.Header>
+          <ScrollView style={styles.scrolling} contentContainerStyle={styles.scrollingContainer}>
+            <Text style={styles.title}>{nameDisplay}</Text>
+          </ScrollView>
         </View>
     )
 }
@@ -63,6 +77,25 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         backgroundColor: '#BEA9DF'
       },
+      profile_header: {
+        flexDirection: 'row', 
+        backgroundColor: '#434371', 
+        justifyContent: 'center',
+        padding: 8,
+        alignItems: 'center',
+        width: Dimensions.get('window').width,
+    },
+    scrolling: {
+      width: Dimensions.get('window').width,
+    },
+    scrollingContainer: {
+      justifyContent: 'center',
+      alignItems: 'center'
+    },
+    title: {
+      fontSize: 30,
+      textAlign: 'center'
+    },
 })
 
 export default Profile
