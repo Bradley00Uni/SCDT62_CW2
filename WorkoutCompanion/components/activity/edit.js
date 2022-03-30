@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Text, TextInput, View, StyleSheet, Button, Alert } from 'react-native';
 import FlashMessage, { showMessage, hideMessage } from "react-native-flash-message";
 
+//Main content returned by edit.js
 const Edit = (activ) => {
     const [id, setId] = useState(activ.activ.id)
     const [name, setName] = useState(activ.activ.name);
@@ -10,6 +11,7 @@ const Edit = (activ) => {
 
     const [returned, setReturned] = useState('')
 
+    //Sends the altered values to the API route for the selected activity model. Will override all values if changed, but keep the original ID and userID
     const sendData = async () => {
         let data = {
              "id": id,
@@ -49,6 +51,8 @@ const Edit = (activ) => {
         }
     }
 
+    //Displays the Form over the top of the Activity screen, can be closed using button in activities.js component or by pressing off the form
+    //Only renders content if an activity is selected
     if(activ != null){
         return (
             <View style={styles.container}>

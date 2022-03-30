@@ -8,15 +8,19 @@ import Activities from './components/activities';
 import Workouts from './components/workouts';
 import Profile from './components/profile';
 
+//Main Function returned by App.Js
+//Opened on Application Start
 export default function App() {
   useEffect(() => {
     readToken()
-  }, [token, index])
+  }, [token, index]) //Only Calls when either token, or index are modified
 
+  //Set variables used when accessing Async Storage
   const STORAGE_TOKEN = '@token'
   const STORAGE_USER = '@user'
   const STORAGE_NAME = '@name'
 
+  //Declare State Variables
   const [token, setToken] = useState(null)
   const [loginState, setLoginState] = useState(true)
   const [returned, setReturned] = useState('')
@@ -27,12 +31,14 @@ export default function App() {
   const [password, setPassword] = useState('')
 
   const [index, setIndex] = useState(0);
+  //Define the routes used for page navigation
   const [routes] = useState([
     {key: 'home', title: 'Home', icon: 'home', color: '#434371'},
     {key: 'workouts', title: 'Workouts', icon: 'routes-clock', color: '#ACDEAA'},
     {key: 'activities', title: 'Activities', icon: 'walk', color: '#f06c64'},
   ]);
 
+  //Function used to convert returned JSON into Async Storage variables and session token
   const saveToken = async (result) => {
     try {
       await AsyncStorage.setItem(STORAGE_TOKEN, result.token)
@@ -51,6 +57,7 @@ export default function App() {
     }
   }
   
+  //Function used to validate if the current session has a valid JWT token
   const readToken = async () => {
     try {
       const asyncToken = await AsyncStorage.getItem(STORAGE_TOKEN)
@@ -64,24 +71,28 @@ export default function App() {
     }
   }
 
+  //Renders the navigation
   const renderScene = BottomNavigation.SceneMap({
     home: Profile,
     activities: Activities,
     workouts: Workouts,
   });
 
+  //Function to edit variables when the User switches between the 'Login' and 'Register' forms
   const loginStateChange = () => {
     setLoginState(!loginState)
     setFirstName('')
     setLastName('')
   }
 
+  //Sends the entered form Data to the API to validate a Login attempt
   const sendLogin = async () => {
     let data = {
       "email" : email,
       "password" : password
     }
 
+    //GET Request to Login API Route
     let response = await fetch('https://workoutapi20220309144340.azurewebsites.net/api/auth/login', {
       method: 'POST',
       body: JSON.stringify(data),
@@ -93,6 +104,7 @@ export default function App() {
 
     if(response.status == 200){
       console.log(result)
+      //Set App Session Token to returned JWT token from API
       saveToken(result)
     }
     else{
@@ -106,6 +118,7 @@ export default function App() {
     }
   }
 
+  //Sends the entered form Data to the API to validate a Register attempt
   const sendRegister = async () => {
     let data = {
       "FirstName" : firstName,
@@ -114,6 +127,7 @@ export default function App() {
       "Password" : password
     }
 
+    //POST Request to Register API Route
     let response = await fetch('https://workoutapi20220309144340.azurewebsites.net/api/auth/register', {
       method: 'POST',
       body: JSON.stringify(data),
@@ -129,7 +143,9 @@ export default function App() {
     }
   }
 
+  //This view is shown if the User is not logged in
   if(token == null){
+    //This view is shown when the user wants to log in
     if(loginState){
       return (
         <View style={styles.container}>
@@ -153,6 +169,7 @@ export default function App() {
       )
     }
     else{
+      //This view is shown when the user wants to register
       return (
         <View style={styles.container}>
           <MaterialCommunityIcons name='weight-lifter' size={100} color="black" />
@@ -177,6 +194,7 @@ export default function App() {
     }
   }
   else{
+    //Displays the Navigation Component
     return (
       <BottomNavigation
         navigationState={{index, routes}}
@@ -188,6 +206,7 @@ export default function App() {
   }
 }
 
+//Stores styles for use in interface
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -233,3 +252,4 @@ const styles = StyleSheet.create({
     marginTop: 10
   },
 })
+

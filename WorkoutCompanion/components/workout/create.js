@@ -20,6 +20,7 @@ const Create = (current) => {
 
 
     useEffect(() => {
+        //Fetches all activities registered to the current user so they can be used in Exercise creation
         return fetch(`https://workoutapi20220309144340.azurewebsites.net/api/activities/user/${user}`).then( (r) => r.json()).then( (rj) => {
             setActivities(rj)
             setLoading(false)
@@ -29,6 +30,7 @@ const Create = (current) => {
     }, [])
 
     const getExercises = () => {
+        //Fetches the data related to the current workout, allowing the list of exercises etc. to update dynamically
         return fetch(`https://workoutapi20220309144340.azurewebsites.net/api/workouts/${workout.id}`).then( (r) => r.json()).then( (rj) => {
             setExercises(rj.exercises)
 
@@ -36,6 +38,7 @@ const Create = (current) => {
         .catch((error) => {console.log(error)})
     }
 
+    //Converts the datetime stored for the workout into a more traditional format, that is easier to read for users
     const convertDate =(date) => {
 
         var newDate = date.toString()
@@ -70,6 +73,7 @@ const Create = (current) => {
         return newDate
     }
 
+    //Function used to add a new exercise model to the database, populating it with the selected activity model, entered duration and ID of the current workout
     const addActivity = async (a) => {
         let data = {
             "activityID": a,
@@ -108,8 +112,10 @@ const Create = (current) => {
         }
     }
 
+    //Only renders if all nessecary data is present
     if((current != null) && (loading == false)){
 
+        //Maps all returned activities onto Cards that contain relevant information. Each also hosts an input that can be used to enter a duration and create and Exercise Model
         let acts = activities.map((val, key) => {
             return (
                 <Card style={styles.item} key={key} containerStyle={{backgroundColor: '#ccf6e0', borderColor: '#47504f', borderWidth: 1, borderRadius: 15,}}>
@@ -123,6 +129,7 @@ const Create = (current) => {
             )
         })
 
+        //Maps all exercise models assosciated with the current workout, updates dynamically so after new ones are created, the list is updated without the need to exit the component
         let exercs = exercises.map((e) => {
             return (
                 <Card key={e.id} style={styles.item} containerStyle={{backgroundColor: '#ccf6e0', borderColor: '#47504f', borderWidth: 1, borderRadius: 15,}}>
@@ -134,6 +141,7 @@ const Create = (current) => {
             )
         })
 
+        //All content is returned within a Scrollview component, meaning as the number of activities/exercises increase, the content displayed to the user is not hindered
         return (
             <ScrollView>
                 <Text style={styles.title}>{convertDate(workout.workoutCreated)} Workout</Text>

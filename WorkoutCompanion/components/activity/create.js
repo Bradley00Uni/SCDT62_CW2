@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Text, TextInput, View, StyleSheet, Button, Alert, ScrollView, Dimensions } from 'react-native';
 import FlashMessage, { showMessage, hideMessage } from "react-native-flash-message";
 
+//Main content returned by create.js
 const Create = (params) => {
     const [name, setName] = useState('');
     const [desc, setDesc] = useState('');
@@ -11,6 +12,8 @@ const Create = (params) => {
     const data = [name, desc, type];
     const [returned, setReturned] = useState('')
 
+    //Sends the data entered within the form to add a new activity model to the database
+    //Additionally includes the current user's ID to ensure it remains attached to the right account
     const sendData = async () => {
 
         let data = {
@@ -51,6 +54,7 @@ const Create = (params) => {
         }
     };
 
+    //Displays the Form over the top of the Activity screen, can be closed using button in activities.js component or by pressing off the form
     return (
         <View style={styles.container}>
             <Text style={styles.title}>Create a New Activity</Text>

@@ -9,6 +9,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import Create from './activity/create';
 import Edit from './activity/edit';
 
+//Main function returned by activities.js
 const Activities = () => {
     const STORAGE_USER = '@user'
 
@@ -24,6 +25,7 @@ const Activities = () => {
     
     useEffect(() => {
         getUser()
+        //Fetch all activities assosciated with the current user - allows activity list to dynamically update
         return fetch(`https://workoutapi20220309144340.azurewebsites.net/api/activities/user/${user}`).then( (response) => response.json()).then( (responseJson) => {
             setActivities(responseJson)
             setLoading(false)
@@ -33,6 +35,7 @@ const Activities = () => {
 
     },)
 
+    //Function to get the current user's ID from Async Storage, so it can be passed in a fetch request to return the correct activities
     const getUser = async () => {
         const id = await AsyncStorage.getItem(STORAGE_USER)
         setUser(id)
@@ -46,6 +49,7 @@ const Activities = () => {
         )
     }
     else{
+        //'Map' all activity models returned from the API onto cards that display all relevant information
             let acts = activities.map((val, key) => {
                     return(
                         <View key={key}> 
@@ -56,7 +60,7 @@ const Activities = () => {
                                     <Text style={{fontSize: 16}}>Description: {val.description}</Text>
                                 </View>     
                                 <View style={{justifyContent: 'space-evenly', flexDirection: 'row', marginTop: 20}}>
-                                    <Button title="Edit Activity" color={'orange'} onPress={() => {setToEdit(val); setEditVisible(true);}} />
+                                    <Button title="Edit Activity" color={'orange'} onPress={() => {setToEdit(val); setEditVisible(true);}} /> 
                                     <Button title="Delete Activity" color={'#ff4034'} onPress={() => deleteConfirm(val)} />
                                 </View>
                             </Card>
@@ -64,14 +68,17 @@ const Activities = () => {
                     )
             })
         
+            //When called, toggles the visibility of the 'Create' overlay
         const toggleCreate = () => {
             setCreateVisible(!createVisible)
         }
 
+        //When called, toggles the visibility of the 'Edit' overlay
         const toggleEdit = () => {
             setEditVisible(false)
         }
 
+        //Displays alert box to confirm user wishes to delete the selected activity
         const deleteConfirm = (val) => {
             return Alert.alert(
                 "Are you sure?",
@@ -82,6 +89,7 @@ const Activities = () => {
             )
         }
 
+        //Function to send API call to delete the selected activity
         const deleteActivity = async (id) => {
             let data = id;
 

@@ -27,6 +27,7 @@ const Workouts = () => {
 
     useEffect(() => {
         getUser()
+        //Fetch all workouts assosciated with the current user - allows workout list to dynamically update
         return fetch(`https://workoutapi20220309144340.azurewebsites.net/api/workouts/user/${user}`).then( (response) => response.json()).then( (responseJson) => {
             setWorkouts(responseJson)
             setLoading(false)
@@ -35,12 +36,16 @@ const Workouts = () => {
         .catch((error) => {console.log(error)})
     },)
 
+    //Function to get the current user's ID from Async Storage, so it can be passed in a fetch request to return the correct workouts
     const getUser = async () => {
         const id = await AsyncStorage.getItem(STORAGE_USER)
         setUser(id)
     }
 
+    //Function to manage the visibility of the Date Picker used when creating a workout
     const setDatePicker =() => {setDatePickerVisible(!datePickerVisible)}
+
+    //Sends entered values for new Workout to the API, creating a new Workout model
     const sendWorkout = async (d) => {
         let data = {
             "workoutCreated" : d,
@@ -79,6 +84,7 @@ const Workouts = () => {
         }
     }
 
+    //Converts the datetime stored for each workout into a more traditional format, that is easier to read for users
     const convertDate =(date) => {
 
         var newDate = date.toString()
@@ -112,9 +118,11 @@ const Workouts = () => {
         return newDate
     }
 
+    //Functions for managing the visibility of the Create and Details overlays respectively
     const toggleDetails = () => { setDetailsVisible(!detailsVisible) }
     const toggleCreate = () => { setCreateVisible(!createVisible) }
 
+    //Displays alert box to confirm user wishes to delete the selected workout
     const deleteConfirm = (val) => {
         return Alert.alert(
             "Are you sure?",
@@ -125,6 +133,7 @@ const Workouts = () => {
         )
     }
 
+    //Function to send API call to delete the selected workout and asosciated exercises
     const deleteWorkout = async (id) => {
         let data = id;
 
@@ -165,6 +174,7 @@ const Workouts = () => {
        )
    }
    else{
+       //'Map' all workout models returned from the API onto cards that display all relevant information
        let works = workouts.reverse().map((val, key) => {
 
             let totalDuration = 0;
@@ -189,6 +199,7 @@ const Workouts = () => {
            )
        })
 
+    //Alters the welcome message phrases based on the when/if the user has completed their last workout
     let last;
     try{
         last = ("Your last workout was on " +  convertDate(workouts[0].workout.workoutCreated) + ", why not add a new one now?")

@@ -7,6 +7,7 @@ import {Restart} from 'fiction-expo-restart';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Link } from '@react-navigation/native';
 
+//Main Function returned by profile.js
 const Profile = () => {
   const [loading, setLoading] = useState(true)
 
@@ -22,8 +23,9 @@ const Profile = () => {
 
   useEffect(() => {
     getWorkouts()
-  }, [loading])
+  }, [loading]) //Only calls whenever loading is modified
 
+  //Displays alert box to confirm user wishes to log out
   const logoutConfirm = () => {
         return (
           <>
@@ -38,6 +40,7 @@ const Profile = () => {
         )
   }
     
+  //Function for logging out and clearing JWT token
   const logout = async () => {
         let response = await fetch('https://workoutapi20220309144340.azurewebsites.net/api/auth/Logout', {
         method: 'POST',
@@ -46,11 +49,13 @@ const Profile = () => {
     
         if(response.status == 200){
             console.log("Logged Out")
+            //Refreshes the Application
             await AsyncStorage.removeItem(STORAGE_TOKEN)
             Restart()
         }
   }
 
+  //Function to get the UserID and FirstName of the logged in User
   const getUser = async () => {
     const id = await AsyncStorage.getItem(STORAGE_USER)
     setUser(id)
@@ -59,6 +64,7 @@ const Profile = () => {
     setName(getName)
   }
 
+  //Function to fetch all activity statistics in the database related to the current user
     const getActivities = async () => {
       return fetch(`https://workoutapi20220309144340.azurewebsites.net/api/activities/user/stats/${user}`).then( (response) => response.json()).then( (responseJson) => {
             setActivities(responseJson)
@@ -68,6 +74,7 @@ const Profile = () => {
         .catch((error) => {console.log(error)})
     }
 
+    //Function to fetch all workout statistics in the database related to the current user
     const getWorkouts = async () => {
       getUser()
       return fetch(`https://workoutapi20220309144340.azurewebsites.net/api/workouts/user/stats/${user}`).then( (response) => response.json()).then( (responseJson) => {
@@ -78,10 +85,10 @@ const Profile = () => {
         .catch((error) => {console.log(error)})
     }
 
+    //Component that displays the returned statistics from the API for Activities
     const ActivityInformation = () => {
 
       if(activities != null){
-        //Add Update Buttons to manually call functions for Activites and Workouts
         let difference = (activities.activityCount - activities.typeCount)
         let differenceMessage = "";
         if(difference < (activities.activityCount / 2)){
@@ -120,8 +127,8 @@ const Profile = () => {
       }
     }
 
+    //Component that displays the returned statistics from the API for Workouts
     const WorkoutInformation = () => {
-      //<Text>You currently have {workouts.workoutCount} workouts recorded, (Total Duration) (Average Duration) (Average Number of Activities) (Visit the Tab)</Text>
      if (workouts != null){
        if(workouts.workoutCount > 0){
         return (
@@ -160,10 +167,12 @@ const Profile = () => {
      }
     }
 
+    //Function called when opening Google Maps
     const openLink = async () => {
       await Linking.openURL('https://www.google.co.uk/maps/search/gyms')
     }
 
+    //Component that displays link to pre-filled Google Maps search for nearby Gyms
     const NearbyLocations = () => {
       return (
         <Card style={styles.item} containerStyle={styles.itemContainer}>
@@ -176,6 +185,7 @@ const Profile = () => {
       )
     }
     
+    //Only renders if application is still Loading
     if(loading){
       return (
         <View></View>
@@ -203,6 +213,7 @@ const Profile = () => {
     }
 }
 
+//Stores styles for use in interface
 const styles = StyleSheet.create({
     container: {
         flex: 1,

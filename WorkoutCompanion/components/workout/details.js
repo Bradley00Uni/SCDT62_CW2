@@ -4,11 +4,13 @@ import FlashMessage, { showMessage, hideMessage } from "react-native-flash-messa
 import { Card, Overlay } from 'react-native-elements';
 import { MaterialCommunityIcons, Entypo, FontAwesome } from '@expo/vector-icons';
 
+//Main function returned by details.js
 const Details = (current) => {
 
     const [workout, setWorkout] = useState(current.current.workout)
     const [exercises, setExercises] = useState(current.current.exercises)
 
+    //Function used to convert the time from the current workout's datetime to a more readable format
     const convertTime = (date) => {
         var time = date.toString()
         var fullTime = time.substring(11, 16)
@@ -22,6 +24,7 @@ const Details = (current) => {
 
     }
 
+    //Converts the datetime stored for the workout into a more traditional format, that is easier to read for users
     const convertDate =(date) => {
 
         var newDate = date.toString()
@@ -56,6 +59,7 @@ const Details = (current) => {
         return newDate
     }
 
+    //Maps all exercise models assosciated with the current workout; updates dynamically.
     let exercs = exercises.map((e) => {
         return (
             <Card key={e.id} style={styles.item} containerStyle={{backgroundColor: '#ACDEAA', borderColor: '#47504f', borderWidth: 2, borderRadius: 18,}}>
@@ -69,6 +73,7 @@ const Details = (current) => {
         )
     })
 
+    //Only renders if a Workout has been passed
     if(current != null){
         let totalDuration = 0;
         exercises.forEach(d => {
